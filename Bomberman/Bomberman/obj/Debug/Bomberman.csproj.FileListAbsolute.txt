@@ -1,1 +1,11 @@
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\Bomberman.exe.config
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\mapa1.txt
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\Bomberman.exe
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\Bomberman.pdb
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\Debug\Bomberman.csprojResolveAssemblyReference.cache
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\Debug\Bomberman.Form1.resources
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\Debug\Bomberman.Properties.Resources.resources
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\Debug\Bomberman.csproj.GenerateResource.Cache
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\Debug\Bomberman.exe
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\Debug\Bomberman.pdb
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\ikonky.bmp
