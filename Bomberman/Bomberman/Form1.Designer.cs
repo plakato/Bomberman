@@ -54,6 +54,7 @@
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 661);
             this.Controls.Add(this.button1);
+            this.DoubleBuffered = true;
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);

@@ -16,9 +16,11 @@ namespace Bomberman
         {
             InitializeComponent();
             ClientSize = new Size(50 * 15, 50 * 13);
+            frame = new Bitmap(50 * 15, 50 * 13);
         }
         Graphics g;
         Mapa m;
+        Bitmap frame;
 
         enum Sipka { neni, hore, dole, vpravo, vlavo };
 
@@ -59,10 +61,17 @@ namespace Bomberman
         private void button1_Click(object sender, EventArgs e)
         {
             button1.Visible = false;
-            g = CreateGraphics();
-            m = new Mapa("mapa1.txt", "ikonky.bmp", g);
-            timer1.Enabled = true;
+            g = Graphics.FromImage(frame);
+            this.DoubleBuffered = true;
+            m = new Mapa("mapa1.txt", "ikonky.png", g);
+            timer1.Enabled = true;                       
+            m.Prekresli(g);
         }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            e.Graphics.DrawImage(frame, 0, 0);
+        } 
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -72,23 +81,27 @@ namespace Bomberman
                     break;
                 case Sipka.hore:
                     Mapa.Feri.py = Mapa.Feri.py - 10;
+                    m.Prekresli(g);
                     break;
                 case Sipka.dole:
                     Mapa.Feri.py = Mapa.Feri.py + 10;
+                    m.Prekresli(g);
                     break;
                 case Sipka.vpravo:
                     Mapa.Feri.px = Mapa.Feri.px + 10;
+                    m.Prekresli(g);
                     break;
                 case Sipka.vlavo:
                     Mapa.Feri.px = Mapa.Feri.px - 10;
+                    m.Prekresli(g);
                     break;
                 default:
                     break;
             }
+            this.Invalidate();
             sipka = Sipka.neni;
-            m.Prekresli(g);
+           
         }
-
         
 
     }
@@ -108,10 +121,8 @@ namespace Bomberman
             NacitajIkonky(cestaIkonky);
             NacitajMapu(cestaMapa);
             Feri = new Bman(52, 52, 40);
-            bmanBitmapa = new Bitmap("bitmap-bman.bmp"); 
+            bmanBitmapa = new Bitmap("b-man.bmp"); 
         }
-
- 
 
         public void NacitajMapu(String cesta)
         {
