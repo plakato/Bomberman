@@ -19,13 +19,13 @@ namespace Bomberman
         int sx;         //sirka stvorceka v pixeloch
         Bitmap[] ikonky;
         Bitmap bmanBitmapa;
-        public static Bman Feri;
+        public Bman Feri;
 
         public Mapa(String cestaMapa, String cestaIkonky, Graphics g)
         {
             NacitajIkonky(cestaIkonky);
             NacitajMapu(cestaMapa);
-            Feri = new Bman(52, 52, 40);
+            Feri = new Bman(52, 52, 30);
             bmanBitmapa = new Bitmap("b-man.bmp");
         }
 
@@ -73,6 +73,24 @@ namespace Bomberman
                 }
             }
             g.DrawImage(bmanBitmapa, Feri.px, Feri.py);
+        }
+        public bool MozeBmanVkrocit(int x, int y)                   //kontroluje ci nejaky roh postavicky uz je na skale
+        {
+            bool vystup = true;
+            if (JeSkala(x, y)) vystup = false;
+            if (JeSkala(x+ Feri.radius, y)) vystup = false;
+            if (JeSkala(x, y+Feri.radius)) vystup = false;
+            if (JeSkala(x+Feri.radius, y+Feri.radius)) vystup = false;
+            return vystup;
+        }
+
+        bool JeSkala(int x, int y)
+        {
+            bool vystup = false;
+            int j = (int)(x / sx);
+            int i = (int)(y / sx);
+            if (mapa[i, j] == 'P' || mapa[i,j]=='K') vystup = true;
+            return vystup;
         }
     }
 

@@ -39,7 +39,6 @@ namespace Bomberman
             else return Sipky.ziadna;
         }
 
-
         private void button1_Click(object sender, EventArgs e)
         {
             button1.Visible = false;
@@ -53,39 +52,40 @@ namespace Bomberman
         protected override void OnPaint(PaintEventArgs e)
         {
             e.Graphics.DrawImage(frame, 0, 0);
-        } 
+        }
 
+        int novex;
+        int novey;
         private void timer1_Tick(object sender, EventArgs e)
         {
+            novex = m.Feri.px;
+            novey = m.Feri.py;
             switch (KtoraJeStlacena())
             {
                 case Sipky.ziadna:
                     break;
                 case Sipky.hore:
-                    Mapa.Feri.py = Mapa.Feri.py - 10;
-                    m.Prekresli(g);
+                    novey = novey - 10;
                     break;
                 case Sipky.dole:
-                    Mapa.Feri.py = Mapa.Feri.py + 10;
-                    m.Prekresli(g);
+                    novey = novey + 10;
                     break;
                 case Sipky.vpravo:
-                    Mapa.Feri.px = Mapa.Feri.px + 10;
-                    m.Prekresli(g);
+                    novex = novex + 10;
                     break;
                 case Sipky.vlavo:
-                    Mapa.Feri.px = Mapa.Feri.px - 10;
-                    m.Prekresli(g);
+                    novex = novex - 10;
                     break;
                 default:
                     break;
             }
-            this.Invalidate();
-           
-        }
-        
-
-    }
-
-   
+            if (m.MozeBmanVkrocit(novex, novey))
+            {
+                m.Feri.px = novex;
+                m.Feri.py = novey;
+            }               
+            m.Prekresli(g);
+            this.Invalidate();           
+        }        
+    }  
 }
