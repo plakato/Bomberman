@@ -14,10 +14,47 @@ namespace Bomberman
     {
         public Form1()
         {
-            InitializeComponent();           
+            InitializeComponent();
+            ClientSize = new Size(50 * 15, 50 * 13);
         }
         Graphics g;
         Mapa m;
+
+        enum Sipka { neni, hore, dole, vpravo, vlavo };
+
+        Sipka sipka = Sipka.neni;
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Up)
+            {
+                sipka = Sipka.hore;
+                return true;
+            }
+            if (keyData == Keys.Down)
+            {
+                sipka = Sipka.dole;
+                return true;
+            }
+            if (keyData == Keys.Left)
+            {
+                sipka = Sipka.vlavo;
+                return true;
+            }
+            if (keyData == Keys.Right)
+            {
+                sipka = Sipka.vpravo;
+                return true;
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
+        {
+            sipka = Sipka.neni;
+        }
+        private void Form1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -29,8 +66,31 @@ namespace Bomberman
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            switch (sipka)
+            {
+                case Sipka.neni:
+                    break;
+                case Sipka.hore:
+                    Mapa.Feri.py = Mapa.Feri.py - 10;
+                    break;
+                case Sipka.dole:
+                    Mapa.Feri.py = Mapa.Feri.py + 10;
+                    break;
+                case Sipka.vpravo:
+                    Mapa.Feri.px = Mapa.Feri.px + 10;
+                    break;
+                case Sipka.vlavo:
+                    Mapa.Feri.px = Mapa.Feri.px - 10;
+                    break;
+                default:
+                    break;
+            }
+            sipka = Sipka.neni;
             m.Prekresli(g);
         }
+
+        
+
     }
 
     public class Mapa
@@ -40,12 +100,18 @@ namespace Bomberman
         int vyska;
         int sx;         //sirka stvorceka v pixeloch
         Bitmap[] ikonky;
+        Bitmap bmanBitmapa;
+        public static Bman Feri;
 
         public Mapa(String cestaMapa,String cestaIkonky, Graphics g)
         {
             NacitajIkonky(cestaIkonky);
-            NacitajMapu(cestaMapa);            
+            NacitajMapu(cestaMapa);
+            Feri = new Bman(52, 52, 40);
+            bmanBitmapa = new Bitmap("bitmap-bman.bmp"); 
         }
+
+ 
 
         public void NacitajMapu(String cesta)
         {
@@ -86,10 +152,11 @@ namespace Bomberman
                 for (int x = 0; x < sirka; x++)
                 {
                     char c = mapa[y,x];
-                    int index = "PnKH".IndexOf(c) % 3;
+                    int index = "nKP".IndexOf(c);
                     g.DrawImage(ikonky[index],sx*x,sx*y);
                 }
             }
+            g.DrawImage(bmanBitmapa, Feri.px, Feri.py);
         }
     }
 

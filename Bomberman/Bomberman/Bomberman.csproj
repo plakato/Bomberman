@@ -80,6 +80,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="bitmap-bman.bmp">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="ikonky.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
