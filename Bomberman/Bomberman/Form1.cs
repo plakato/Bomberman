@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using NullFX.Win32;
 
 namespace Bomberman
-{    
+{
     public partial class Form1 : Form
     {
         public Form1()
@@ -18,12 +12,15 @@ namespace Bomberman
             InitializeComponent();
             ClientSize = new Size(50 * 15, 50 * 13);
             frame = new Bitmap(50 * 15, 50 * 13);
+            KeyPreview = true;
         }
         Graphics g;
         Mapa m;
         Bitmap frame;
 
         enum Sipky { ziadna, vpravo, vlavo, hore, dole };
+        enum Stav { nezacala, bezi, koniec};
+        Stav stav = Stav.nezacala;
 
         static Sipky KtoraJeStlacena()
         {
@@ -41,12 +38,16 @@ namespace Bomberman
 
         private void button1_Click(object sender, EventArgs e)
         {
+            
+            
+            stav = Stav.bezi;
             button1.Visible = false;
             g = Graphics.FromImage(frame);
             this.DoubleBuffered = true;
-            m = new Mapa("mapa1.txt", "ikonky.png", g);
+            m = new Mapa("mapa1.txt", "ikonky.bmp", g);
             timer1.Enabled = true;                       
             m.Prekresli(g);
+            this.Focus();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -58,6 +59,8 @@ namespace Bomberman
         int novey;
         private void timer1_Tick(object sender, EventArgs e)
         {
+            KeyStateInfo medzernik = KeyboardInfo.GetKeyState(Keys.Space);
+            if (medzernik.IsPressed) m.TuDajBombu(m.Feri.px + 20, m.Feri.py + 20);
             novex = m.Feri.px;
             novey = m.Feri.py;
             switch (KtoraJeStlacena())

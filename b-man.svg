@@ -17,7 +17,7 @@
    inkscape:export-filename="C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\bitmap-bman.bmp.png"
    inkscape:export-xdpi="89.368095"
    inkscape:export-ydpi="89.368095"
-   sodipodi:docname="New document 1">
+   sodipodi:docname="b-man.png">
   <defs
      id="defs4">
     <inkscape:path-effect
@@ -477,7 +477,7 @@
        sodipodi:cy="14"
        sodipodi:rx="6"
        sodipodi:ry="6"
-       d="m 30,14 a 6,6 0 1 1 -12,0 6,6 0 1 1 12,0 z"
+       d="m 30,14 c 0,3.313708 -2.686292,6 -6,6 -3.313708,0 -6,-2.686292 -6,-6 0,-3.313708 2.686292,-6 6,-6 3.313708,0 6,2.686292 6,6 z"
        transform="matrix(1.6761048,0,0,1.6761048,-15.809925,991.81372)" />
     <path
        style="fill:#000000;fill-rule:evenodd;stroke:none"

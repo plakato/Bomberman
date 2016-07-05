@@ -8,6 +8,7 @@ C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\Debug\Bomberman.csproj.GenerateResource.Cache
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\Debug\Bomberman.exe
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\Debug\Bomberman.pdb
-C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\ikonky.png
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\b-man.png
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\b-man.bmp
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\ikonky.bmp
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\ikonkyh.png

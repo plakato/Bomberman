@@ -68,7 +68,7 @@ namespace Bomberman
                 for (int x = 0; x < sirka; x++)
                 {
                     char c = mapa[y, x];
-                    int index = "nKP".IndexOf(c);
+                    int index = "nKPB".IndexOf(c);
                     g.DrawImage(ikonky[index], sx * x, sx * y);
                 }
             }
@@ -91,6 +91,13 @@ namespace Bomberman
             int i = (int)(y / sx);
             if (mapa[i, j] == 'P' || mapa[i,j]=='K') vystup = true;
             return vystup;
+        }
+
+        public void TuDajBombu(int x, int y)
+        {
+            int j = (int)(x / sx);
+            int i = (int)(y / sx);
+            mapa[i, j] = 'B';
         }
     }
 
