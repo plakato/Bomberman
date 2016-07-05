@@ -94,9 +94,6 @@
     <Content Include="ikonky.bmp">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="ikonkyh.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="mapa1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
