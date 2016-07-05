@@ -11,3 +11,6 @@ C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\obj\
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\b-man.png
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\b-man.bmp
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\ikonky.bmp
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\ikonkyps.png
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\ikonkypsstare.png
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\ikonky.png

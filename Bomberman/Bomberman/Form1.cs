@@ -44,7 +44,7 @@ namespace Bomberman
             button1.Visible = false;
             g = Graphics.FromImage(frame);
             this.DoubleBuffered = true;
-            m = new Mapa("mapa1.txt", "ikonky.bmp", g);
+            m = new Mapa("mapa1.txt", "ikonky.png", g);
             timer1.Enabled = true;                       
             m.Prekresli(g);
             this.Focus();
