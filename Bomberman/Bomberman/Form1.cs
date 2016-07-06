@@ -52,7 +52,7 @@ namespace Bomberman
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.DrawImage(frame, 0, 0);
+           e.Graphics.DrawImage(frame, 0, 0);
         }
 
         int novex;

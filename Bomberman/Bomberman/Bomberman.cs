@@ -106,8 +106,11 @@ namespace Bomberman
         {
             int j = PoziciaBx(x);
             int i = PoziciaBy(y);
-            mapa[i, j] = 'B';
-            Vybuch v = new Vybuch(i, j, m);
+            if (mapa[i, j] != 'B')
+            {
+                mapa[i, j] = 'B';
+                Vybuch v = new Vybuch(i, j, m);
+            }
         }
         public static char Get(int x, int y)
         {
@@ -140,11 +143,12 @@ namespace Bomberman
     public class Vybuch
     {
         int doba;
-        public static int dosah = 2;
+        public static int dosah = 1;
         int x;
         int y;
-        public static int maxNaraz = 2;
-        public static List<Vybuch> vList = new List<Vybuch>();
+        public static int maxNaraz = 1;
+        public static List<Vybuch> cakajuciList = new List<Vybuch>();
+        public static List<Vybuch> vybuchujuciList = new List<Vybuch>();
         public static List<Vybuch> removeList = new List<Vybuch>();
         static Mapa m;
 
@@ -153,24 +157,31 @@ namespace Bomberman
             x = xx;
             y = yy;
             doba = 50;
-            vList.Add(this);
+            cakajuciList.Add(this);
             m = mm;
         }
 
         public static void VyhodnotBomby()
         {
-            foreach (var v in vList)
+            foreach (var v in cakajuciList)
             {
                 v.doba--;
-                if (v.doba == 20) VykresliVybuch(v.x, v.y);
-                if (v.doba == 0)
+                if (v.doba == 20)
                 {
-                    UpracVybuch(v.x, v.y);
-                    removeList.Add(v);
+                    VykresliVybuch(v.x, v.y);
+                    vybuchujuciList.Add(v);
                 }
             }
-            foreach (var v in removeList)
-                    vList.Remove(v);
+            foreach (var v in vybuchujuciList)
+            {
+                if (v.doba == 20) cakajuciList.Remove(v);
+                v.doba--;
+                if (v.doba == 0)
+                {
+                    removeList.Add(v);
+                    UpracVybuch(v.x, v.y);
+                }
+            }
             removeList.Clear();
         }
 
@@ -178,7 +189,7 @@ namespace Bomberman
         {
             char c;
             Mapa.Set(x, y, 'V');
-            for (int i = 0; i <= dosah; i++)
+            for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x + i, y);
                 if (c == 'P') break;
@@ -189,20 +200,20 @@ namespace Bomberman
                 }
                 if (c=='B')
                 {
-                    NajdiVybuch(x + i, y).doba = 20;        //20 je doba, pri ktorej bomba vybuchuje
+                    NajdiVybuch(x + i, y).doba = 21;        //20 je doba, pri ktorej bomba vybuchuje
                     break;
                 }
                 if (c == 'n')
                 {
                     if (i == dosah) Mapa.Set(x + i, y, 'v');
-                    else Mapa.Set(x + 1, y, '|');
+                    else Mapa.Set(x + i, y, '|');
                 }
 
             }
         }
         static Vybuch NajdiVybuch(int x, int y)
         {
-            foreach (var v in vList)
+            foreach (var v in cakajuciList)
             {
                 if (v.x == x && v.y == y) return v;
             }
@@ -215,7 +226,7 @@ namespace Bomberman
 
         public static bool MozesBombovat(int x, int y)
         {
-            if (vList.Count < maxNaraz)
+            if (cakajuciList.Count < maxNaraz)
             {
                 return true;
             }
