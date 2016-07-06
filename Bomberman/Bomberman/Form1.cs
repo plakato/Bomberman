@@ -60,7 +60,9 @@ namespace Bomberman
         private void timer1_Tick(object sender, EventArgs e)
         {
             KeyStateInfo medzernik = KeyboardInfo.GetKeyState(Keys.Space);
-            if (medzernik.IsPressed) m.TuDajBombu(m.Feri.px + 20, m.Feri.py + 20);
+            if (medzernik.IsPressed && Vybuch.MozesBombovat(m.Feri.px + 20, m.Feri.py + 20)) 
+                    m.TuDajBombu(m.Feri.px + 20, m.Feri.py + 20, m);
+            Vybuch.VyhodnotBomby();
             novex = m.Feri.px;
             novey = m.Feri.py;
             switch (KtoraJeStlacena())
