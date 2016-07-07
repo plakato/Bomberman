@@ -146,7 +146,7 @@ namespace Bomberman
         public static int dosah = 1;
         int x;
         int y;
-        public static int maxNaraz = 1;
+        public static int maxNaraz = 3;
         public static List<Vybuch> cakajuciList = new List<Vybuch>();
         public static List<Vybuch> vybuchujuciList = new List<Vybuch>();
         public static List<Vybuch> removeList = new List<Vybuch>();
@@ -192,24 +192,45 @@ namespace Bomberman
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x + i, y);
-                if (c == 'P') break;
-                if (c=='K')
-                {
-                    Mapa.Set(x + i, y, 'k');
-                    break;
-                }
-                if (c=='B')
-                {
-                    NajdiVybuch(x + i, y).doba = 21;        //20 je doba, pri ktorej bomba vybuchuje
-                    break;
-                }
-                if (c == 'n')
-                {
-                    if (i == dosah) Mapa.Set(x + i, y, 'v');
-                    else Mapa.Set(x + i, y, '|');
-                }
-
+                if (!MozeVybuchPokracovat(x+i,y,i,c, 'v', '|')) break;
             }
+            for (int i = 1; i <= dosah; i++)
+            {
+                c = Mapa.Get(x - i, y);
+                if (!MozeVybuchPokracovat(x - i, y, i, c, '^', '|')) break;
+            }
+            for (int i = 1; i <= dosah; i++)
+            {
+                c = Mapa.Get(x, y+i);
+                if (!MozeVybuchPokracovat(x, y+i, i, c, '>', '-')) break;
+            }
+            for (int i = 1; i <= dosah; i++)
+            {
+                c = Mapa.Get(x, y-i);
+                if (!MozeVybuchPokracovat(x, y-i, i, c, '<', '-')) break;
+            }
+        }
+        static bool MozeVybuchPokracovat(int x, int y,int i, char c, char koniec, char most)
+        {
+            bool v = true;
+                if (c == 'P') v = false;
+                 if (c == 'K')
+                {
+                    Mapa.Set(x, y, 'k');
+                    v=false;
+                }
+                 if (c == 'B')
+                {
+                    NajdiVybuch(x, y).doba = 21;        //20 je doba, pri ktorej bomba vybuchuje
+                    v = false; ;
+                }
+                if (c=='n')
+                {
+                if (i == dosah)
+                    Mapa.Set(x, y, koniec);               
+                else Mapa.Set(x, y, most);
+                }
+                return v;
         }
         static Vybuch NajdiVybuch(int x, int y)
         {
@@ -221,7 +242,48 @@ namespace Bomberman
         }
         static void UpracVybuch(int x, int y)
         {
-
+            char c;
+            Mapa.Set(x, y, 'n');
+            for (int i = 1; i <= dosah; i++)
+            {
+                c = Mapa.Get(x + i, y);
+                if (c!='|')
+                {
+                    if (c == 'v' || c == 'k')
+                        Mapa.Set(x + i, y, 'n');
+                    break;
+                }
+            }
+            for (int i = 1; i <= dosah; i++)
+            {
+                c = Mapa.Get(x - i, y);
+                if (c != '|')
+                {
+                    if (c == '^' || c == 'k')
+                        Mapa.Set(x - i, y, 'n');
+                    break;
+                }
+            }
+            for (int i = 1; i <= dosah; i++)
+            {
+                c = Mapa.Get(x , y+i);
+                if (c != '-')
+                {
+                    if (c == '>' || c == 'k')
+                        Mapa.Set(x, y+i, 'n');
+                    break;
+                }
+            }
+            for (int i = 1; i <= dosah; i++)
+            {
+                c = Mapa.Get(x, y-i);
+                if (c != '-')
+                {
+                    if (c == '<' || c=='k')
+                        Mapa.Set(x , y-i, 'n');
+                    break;
+                }
+            }
         }
 
         public static bool MozesBombovat(int x, int y)
