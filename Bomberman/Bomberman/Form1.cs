@@ -20,7 +20,7 @@ namespace Bomberman
 
         enum Sipky { ziadna, vpravo, vlavo, hore, dole };
         enum Stav { nezacala, bezi, koniec};
-        Stav stav = Stav.nezacala;
+        Stav stav = Stav.nezacala;  
 
         static Sipky KtoraJeStlacena()
         {
@@ -38,16 +38,35 @@ namespace Bomberman
 
         private void button1_Click(object sender, EventArgs e)
         {
-            
-            
-            stav = Stav.bezi;
-            button1.Visible = false;
+
+
+            PrejdiDoStavu(Stav.bezi);
             g = Graphics.FromImage(frame);
             this.DoubleBuffered = true;
-            m = new Mapa("mapa1.txt", "ikonky.png", g);
-            timer1.Enabled = true;                       
+            m = new Mapa("mapa1.txt", "ikonky.png", g);                     
             m.Prekresli(g);
-            this.Focus();
+        }
+
+        void PrejdiDoStavu(Stav novyStav)
+        {
+            switch (novyStav)
+            {
+                case Stav.nezacala:
+                    stav = Stav.nezacala;
+                    break;
+                case Stav.bezi:
+                    this.Focus();
+                    button1.Visible = false;
+                    timer1.Enabled = true;
+                    stav = Stav.bezi;
+                    break;
+                case Stav.koniec:
+                    MessageBox.Show("The End");
+                    stav = Stav.koniec;
+                    break;
+                default:
+                    break;
+            }
         }
 
         protected override void OnPaint(PaintEventArgs e)

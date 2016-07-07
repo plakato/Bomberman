@@ -77,10 +77,10 @@ namespace Bomberman
         public bool MozeBmanVkrocit(int x, int y)                   //kontroluje ci nejaky roh postavicky uz je na skale
         {
             bool vystup = true;
-            if (JeSkala(x, y)) vystup = false;
-            if (JeSkala(x+ Feri.radius, y)) vystup = false;
-            if (JeSkala(x, y+Feri.radius)) vystup = false;
-            if (JeSkala(x+Feri.radius, y+Feri.radius)) vystup = false;
+            if (JeSkalaAleboBomba(x, y)) vystup = false;
+            if (JeSkalaAleboBomba(x+ Feri.radius, y)) vystup = false;
+            if (JeSkalaAleboBomba(x, y+Feri.radius)) vystup = false;
+            if (JeSkalaAleboBomba(x+Feri.radius, y+Feri.radius)) vystup = false;
             return vystup;
         }
 
@@ -93,7 +93,7 @@ namespace Bomberman
             return (int)(y / sx);
         }
 
-        bool JeSkala(int x, int y)
+        bool JeSkalaAleboBomba(int x, int y)
         {
             bool vystup = false;
             int j = PoziciaBx(x);
@@ -143,7 +143,7 @@ namespace Bomberman
     public class Vybuch
     {
         int doba;
-        public static int dosah = 1;
+        public static int dosah = 3;
         int x;
         int y;
         public static int maxNaraz = 3;
@@ -156,7 +156,7 @@ namespace Bomberman
         {
             x = xx;
             y = yy;
-            doba = 50;
+            doba = 40;
             cakajuciList.Add(this);
             m = mm;
         }
@@ -166,7 +166,7 @@ namespace Bomberman
             foreach (var v in cakajuciList)
             {
                 v.doba--;
-                if (v.doba == 20)
+                if (v.doba == 10)
                 {
                     VykresliVybuch(v.x, v.y);
                     vybuchujuciList.Add(v);
@@ -174,7 +174,7 @@ namespace Bomberman
             }
             foreach (var v in vybuchujuciList)
             {
-                if (v.doba == 20) cakajuciList.Remove(v);
+                if (v.doba == 10) cakajuciList.Remove(v);
                 v.doba--;
                 if (v.doba == 0)
                 {
@@ -187,33 +187,30 @@ namespace Bomberman
 
         static void VykresliVybuch(int x, int y)
         {
-            char c;
             Mapa.Set(x, y, 'V');
             for (int i = 1; i <= dosah; i++)
             {
-                c = Mapa.Get(x + i, y);
-                if (!MozeVybuchPokracovat(x+i,y,i,c, 'v', '|')) break;
+                if (!MozeVybuchPokracovat(x+i,y,i, 'v', '|')) break;
             }
             for (int i = 1; i <= dosah; i++)
             {
-                c = Mapa.Get(x - i, y);
-                if (!MozeVybuchPokracovat(x - i, y, i, c, '^', '|')) break;
+                if (!MozeVybuchPokracovat(x - i, y, i, '^', '|')) break;
             }
             for (int i = 1; i <= dosah; i++)
             {
-                c = Mapa.Get(x, y+i);
-                if (!MozeVybuchPokracovat(x, y+i, i, c, '>', '-')) break;
+                if (!MozeVybuchPokracovat(x, y+i, i, '>', '-')) break;
             }
             for (int i = 1; i <= dosah; i++)
             {
-                c = Mapa.Get(x, y-i);
-                if (!MozeVybuchPokracovat(x, y-i, i, c, '<', '-')) break;
+                if (!MozeVybuchPokracovat(x, y-i, i, '<', '-')) break;
             }
         }
-        static bool MozeVybuchPokracovat(int x, int y,int i, char c, char koniec, char most)
+        static bool MozeVybuchPokracovat(int x, int y,int i, char koniec, char most)
         {
+            char c;
+            c = Mapa.Get(x , y);
             bool v = true;
-                if (c == 'P') v = false;
+                if (c == 'P' || c=='k') v = false;
                  if (c == 'K')
                 {
                     Mapa.Set(x, y, 'k');
@@ -221,7 +218,7 @@ namespace Bomberman
                 }
                  if (c == 'B')
                 {
-                    NajdiVybuch(x, y).doba = 21;        //20 je doba, pri ktorej bomba vybuchuje
+                    NajdiVybuch(x, y).doba = 11;        //10 je doba, pri ktorej bomba vybuchuje
                     v = false; ;
                 }
                 if (c=='n')
@@ -247,42 +244,26 @@ namespace Bomberman
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x + i, y);
-                if (c!='|')
-                {
-                    if (c == 'v' || c == 'k')
-                        Mapa.Set(x + i, y, 'n');
-                    break;
-                }
+                if (c == 'P' || c=='K') break;
+                else Mapa.Set(x + i, y, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x - i, y);
-                if (c != '|')
-                {
-                    if (c == '^' || c == 'k')
-                        Mapa.Set(x - i, y, 'n');
-                    break;
-                }
+                if (c == 'P' || c == 'K') break;
+                else Mapa.Set(x - i, y, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
-                c = Mapa.Get(x , y+i);
-                if (c != '-')
-                {
-                    if (c == '>' || c == 'k')
-                        Mapa.Set(x, y+i, 'n');
-                    break;
-                }
+                c = Mapa.Get(x , y + i);
+                if (c == 'P' || c == 'K') break;
+                else Mapa.Set(x , y+i, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
-                c = Mapa.Get(x, y-i);
-                if (c != '-')
-                {
-                    if (c == '<' || c=='k')
-                        Mapa.Set(x , y-i, 'n');
-                    break;
-                }
+                c = Mapa.Get(x, y - i);
+                if (c == 'P' || c == 'K') break;
+                else Mapa.Set(x , y-i, 'n');
             }
         }
 
