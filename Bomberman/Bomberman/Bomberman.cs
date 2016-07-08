@@ -16,9 +16,13 @@ namespace Bomberman
         static char[,] mapa;
         int sirka;          //hracieho pola
         int vyska;
+        int pocetKamenov;
         int sx;         //sirka stvorceka v pixeloch
+        int branax;
+        int branay;
+        bool BranaJeOtvorena = true;
         Bitmap[] ikonky;
-        Bitmap bmanBitmapa;
+        public static Bitmap bmanBitmapa;
         public Bman Feri;
 
         public Mapa(String cestaMapa, String cestaIkonky, Graphics g)
@@ -32,15 +36,28 @@ namespace Bomberman
         public void NacitajMapu(String cesta)
         {
             System.IO.StreamReader sr = new System.IO.StreamReader(cesta);
+            pocetKamenov = int.Parse(sr.ReadLine());
             sirka = int.Parse(sr.ReadLine());
-            vyska = int.Parse(sr.ReadLine());
+            vyska = int.Parse(sr.ReadLine());           
             mapa = new char[vyska, sirka];
+            Random rnd = new Random();
+            int brana = rnd.Next(0, 32);
+            int kamen = 0;
 
             for (int i = 0; i < vyska; i++)
             {
                 String riadok = sr.ReadLine();
                 for (int j = 0; j < sirka; j++)
                 {
+                    if (riadok[j]=='K')
+                    {
+                        if (kamen==brana)
+                        {
+                            branax = i;
+                            branay = j;
+                        }
+                        kamen++;
+                    }
                     mapa[i, j] = riadok[j];
                 }
             }
@@ -68,7 +85,7 @@ namespace Bomberman
                 for (int x = 0; x < sirka; x++)
                 {
                     char c = mapa[y, x];
-                    int index = "nKPBV<>v^-|k".IndexOf(c);
+                    int index = "nKPBV<>v^-|kG".IndexOf(c);
                     g.DrawImage(ikonky[index], sx * x, sx * y);
                 }
             }
@@ -98,7 +115,16 @@ namespace Bomberman
             bool vystup = false;
             int j = PoziciaBx(x);
             int i = PoziciaBy(y);
-            if (mapa[i, j] == 'P' || mapa[i,j]=='K') vystup = true;
+            if (mapa[i, j] == 'P' || mapa[i, j] == 'K') vystup = true;
+            else if (mapa[i, j] == 'B') ;
+            else if (mapa[i, j] == 'G')
+                    if (BranaJeOtvorena)
+                    Form1.MojFormular.PrejdiDoStavu(Form1.Stav.vyhra);
+            else if (mapa[i, j] != 'n')
+            {
+                Bman.Umrel();
+                Form1.MojFormular.PrejdiDoStavu(Form1.Stav.prehra);
+            }
             return vystup;
         }
 
@@ -111,6 +137,11 @@ namespace Bomberman
                 mapa[i, j] = 'B';
                 Vybuch v = new Vybuch(i, j, m);
             }
+        }
+        public bool TuJeBrana(int x, int y)
+        {
+            if (x == branax && y == branay && mapa[x, y] == 'k') return true;
+            return false;
         }
         public static char Get(int x, int y)
         {
@@ -138,12 +169,16 @@ namespace Bomberman
             py = y;
             radius = r;
         }
+        public static void Umrel()
+        {
+            Mapa.bmanBitmapa = new Bitmap("smrtka.png");
+        }
     }
 
     public class Vybuch
     {
         int doba;
-        public static int dosah = 3;
+        public static int dosah = 2;
         int x;
         int y;
         public static int maxNaraz = 3;
@@ -244,25 +279,29 @@ namespace Bomberman
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x + i, y);
-                if (c == 'P' || c=='K') break;
+                if (c == 'P' || c == 'K') break;
+                else if (m.TuJeBrana(x + i, y)) Mapa.Set(x + i, y, 'G');
                 else Mapa.Set(x + i, y, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x - i, y);
                 if (c == 'P' || c == 'K') break;
+                else if (m.TuJeBrana(x - i, y)) Mapa.Set(x - i, y, 'G');
                 else Mapa.Set(x - i, y, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x , y + i);
                 if (c == 'P' || c == 'K') break;
+                else if (m.TuJeBrana(x, y + i)) Mapa.Set(x, y + i, 'G');
                 else Mapa.Set(x , y+i, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x, y - i);
                 if (c == 'P' || c == 'K') break;
+                else if (m.TuJeBrana(x, y - i)) Mapa.Set(x, y - i, 'G');
                 else Mapa.Set(x , y-i, 'n');
             }
         }

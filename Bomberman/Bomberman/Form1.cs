@@ -9,6 +9,7 @@ namespace Bomberman
     {
         public Form1()
         {
+            MojFormular = this;
             InitializeComponent();
             ClientSize = new Size(50 * 15, 50 * 13);
             frame = new Bitmap(50 * 15, 50 * 13);
@@ -17,10 +18,11 @@ namespace Bomberman
         Graphics g;
         Mapa m;
         Bitmap frame;
+        public static Form1 MojFormular;
 
         enum Sipky { ziadna, vpravo, vlavo, hore, dole };
-        enum Stav { nezacala, bezi, koniec};
-        Stav stav = Stav.nezacala;  
+        public enum Stav { uvod, bezi, vyhra, prehra, vyhodnotenie};
+        Stav stav = Stav.uvod;  
 
         static Sipky KtoraJeStlacena()
         {
@@ -38,8 +40,6 @@ namespace Bomberman
 
         private void button1_Click(object sender, EventArgs e)
         {
-
-
             PrejdiDoStavu(Stav.bezi);
             g = Graphics.FromImage(frame);
             this.DoubleBuffered = true;
@@ -47,22 +47,34 @@ namespace Bomberman
             m.Prekresli(g);
         }
 
-        void PrejdiDoStavu(Stav novyStav)
+        public void PrejdiDoStavu(Stav novyStav)
         {
             switch (novyStav)
             {
-                case Stav.nezacala:
-                    stav = Stav.nezacala;
+                case Stav.uvod:
+                    stav = Stav.uvod;
                     break;
                 case Stav.bezi:
-                    this.Focus();
                     button1.Visible = false;
+                    this.Focus();
                     timer1.Enabled = true;
                     stav = Stav.bezi;
                     break;
-                case Stav.koniec:
-                    MessageBox.Show("The End");
-                    stav = Stav.koniec;
+                case Stav.vyhra:
+                    timer1.Enabled = false;
+                    stav = Stav.vyhra;
+                    break;
+                case Stav.prehra:
+                    timer1.Enabled = false;
+                    timer2.Enabled = true;
+                    Bitmap boom = new Bitmap("boom.png");
+                    g.DrawImage(boom, 10, 10);
+                    stav = Stav.prehra;
+                    break;
+                case Stav.vyhodnotenie:
+                    button1.Visible = true;
+                    timer2.Enabled = false;
+                    stav = Stav.vyhodnotenie;
                     break;
                 default:
                     break;
@@ -110,6 +122,11 @@ namespace Bomberman
             }               
             m.Prekresli(g);
             this.Invalidate();           
-        }        
+        }
+
+        private void timer2_Tick(object sender, EventArgs e)
+        {
+            PrejdiDoStavu(Stav.vyhodnotenie);
+        }
     }  
 }
