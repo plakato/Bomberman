@@ -36,12 +36,19 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(194, 196);
+            this.button1.BackColor = System.Drawing.Color.Transparent;
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Red;
+            this.button1.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Microsoft YaHei UI", 39.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.Color.Cornsilk;
+            this.button1.Location = new System.Drawing.Point(117, 393);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(313, 89);
+            this.button1.Size = new System.Drawing.Size(313, 82);
             this.button1.TabIndex = 0;
-            this.button1.Text = "Nova hra";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Text = "Nová hra";
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // timer1
@@ -58,11 +65,12 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.BackgroundImage = global::Bomberman.Properties.Resources.background;
             this.ClientSize = new System.Drawing.Size(784, 661);
             this.Controls.Add(this.button1);
             this.DoubleBuffered = true;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Bomberman";
             this.ResumeLayout(false);
 
         }

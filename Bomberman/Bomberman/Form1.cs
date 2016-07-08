@@ -67,8 +67,6 @@ namespace Bomberman
                 case Stav.prehra:
                     timer1.Enabled = false;
                     timer2.Enabled = true;
-                    Bitmap boom = new Bitmap("boom.png");
-                    g.DrawImage(boom, 10, 10);
                     stav = Stav.prehra;
                     break;
                 case Stav.vyhodnotenie:
@@ -119,8 +117,13 @@ namespace Bomberman
             {
                 m.Feri.px = novex;
                 m.Feri.py = novey;
-            }               
+            }
             m.Prekresli(g);
+            if (stav==Stav.prehra)
+            {
+                Bitmap boom = new Bitmap("boom.png");
+                g.DrawImage(boom, frame.Width/2 - boom.Width/2,frame.Height/2 - boom.Height/2);
+            }
             this.Invalidate();           
         }
 

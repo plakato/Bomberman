@@ -29,8 +29,8 @@ namespace Bomberman
         {
             NacitajIkonky(cestaIkonky);
             NacitajMapu(cestaMapa);
-            Feri = new Bman(52, 52, 30);
-            bmanBitmapa = new Bitmap("b-man.bmp");
+            Feri = new Bman(52, 52, 35);
+            bmanBitmapa = new Bitmap("bman2.png");
         }
 
         public void NacitajMapu(String cesta)
@@ -117,9 +117,7 @@ namespace Bomberman
             int i = PoziciaBy(y);
             if (mapa[i, j] == 'P' || mapa[i, j] == 'K') vystup = true;
             else if (mapa[i, j] == 'B') ;
-            else if (mapa[i, j] == 'G')
-                    if (BranaJeOtvorena)
-                    Form1.MojFormular.PrejdiDoStavu(Form1.Stav.vyhra);
+            else if (mapa[i, j] == 'G') ;
             else if (mapa[i, j] != 'n')
             {
                 Bman.Umrel();
