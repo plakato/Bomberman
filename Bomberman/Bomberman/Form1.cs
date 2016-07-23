@@ -61,7 +61,8 @@ namespace Bomberman
                     BSkusitZnovu.Visible = false;
                     BVzdatTo.Visible = false;
                     TCasomiera.Visible = true;
-                    Vybuch.cakajuciList.Clear();               
+                    Vybuch.cakajuciList.Clear();
+                    Vybuch.vybuchujuciList.Clear();             
                     this.Focus();
                     timer1.Enabled = true;
                     timer2.Enabled = true;
@@ -108,7 +109,7 @@ namespace Bomberman
         {
             KeyStateInfo medzernik = KeyboardInfo.GetKeyState(Keys.Space);
             if (medzernik.IsPressed && Vybuch.MozesBombovat()) 
-                    m.TuDajBombu(m.Feri.px + 20, m.Feri.py + 20, m);
+                    m.TuDajBombu(m.Feri.px + m.Feri.radius/2, m.Feri.py + m.Feri.radius / 2, m);
             Vybuch.VyhodnotBomby();
             novex = m.Feri.px;
             novey = m.Feri.py;
@@ -137,13 +138,14 @@ namespace Bomberman
                 m.Feri.py = novey;
                 m.Prekresli(g);
             }
-           
+           // m.Prekresli(g);
+
             if (stav==Stav.prehra)
             {
                 Bitmap boom = new Bitmap("boom.png");
                 g.DrawImage(boom, frame.Width/2 - boom.Width/2,frame.Height/2 - boom.Height/2);
             }
-            TCasomiera.Text =ts.ToString(@"m\:ss");
+            TCasomiera.Text = ts.ToString(@"m\:ss");
             this.Invalidate();           
         }
 

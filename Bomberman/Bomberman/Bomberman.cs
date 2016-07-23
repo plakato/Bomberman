@@ -21,6 +21,7 @@ namespace Bomberman
         int branax;
         int branay;
         public static bool BranaJeOtvorena = false;
+        bool vzdialilSaOdBomby = true;
         Bitmap[] ikonky;
         public static Bitmap bmanBitmapa;
         public Bman Feri;
@@ -91,6 +92,11 @@ namespace Bomberman
                 }
             }
             g.DrawImage(bmanBitmapa, Feri.px, Feri.py);
+            if (vzdialilSaOdBomby)
+            {
+                //g.DrawRectangle(Pens.Yellow, 0, 0, 10, 10);
+            }
+            
         }
         public bool MozeBmanVkrocit(int x, int y)                   //kontroluje ci nejaky roh postavicky uz je na skale
         {
@@ -99,6 +105,14 @@ namespace Bomberman
             if (JeSkalaAleboBomba(x+ Feri.radius, y)) vystup = false;
             if (JeSkalaAleboBomba(x, y+Feri.radius)) vystup = false;
             if (JeSkalaAleboBomba(x+Feri.radius, y+Feri.radius)) vystup = false;
+            //Console.WriteLine("Pozicia " + PoziciaBx(Feri.px + Feri.radius / 2) + "," + PoziciaBy(Feri.py + Feri.radius / 2) + " co tam je: " + mapa[PoziciaBx(Feri.py + Feri.radius / 2), PoziciaBy(Feri.px + Feri.radius / 2)]);
+            if (mapa[PoziciaBy(Feri.py + Feri.radius / 2),                  //zistim, ci je stred bombermana mimo bomby - teda uz na nu nemoze vkrocit
+                     PoziciaBx(Feri.px + Feri.radius / 2)] != 'B')
+            {
+                vzdialilSaOdBomby = true;
+                //Console.WriteLine("zmenil som na true");
+            }
+                
             return vystup;
         }
 
@@ -113,19 +127,22 @@ namespace Bomberman
 
         bool JeSkalaAleboBomba(int x, int y)
         {
-            bool vystup = false;
             int j = PoziciaBx(x);
             int i = PoziciaBy(y);
-            if (mapa[i, j] == 'P' || mapa[i, j] == 'K') vystup = true;
-            else if (mapa[i, j] == 'B') ;
-            else if (mapa[i, j] == 'G')
-            { if (Feri.JevBrane(sx)) return true; }
+            if (mapa[i, j] == 'P' || mapa[i, j] == 'K') return true;
+            else if (mapa[i, j] == 'B')
+            {
+                if (vzdialilSaOdBomby) return true;
+                else return false;
+            }
+            else if (mapa[i, j] == 'G' && Feri.JevBrane(sx))
+                return true;
             else if (mapa[i, j] != 'n' && mapa[i, j] != 'G')
             {
                 Feri.Umrel();
                 Form1.MojFormular.PrejdiDoStavu(Form1.Stav.prehra);
             }
-            return vystup;
+            return false;
         }
 
         public void TuDajBombu(int x, int y, Mapa m)
@@ -136,6 +153,8 @@ namespace Bomberman
             {
                 mapa[i, j] = 'B';
                 Vybuch v = new Vybuch(i, j, m);
+                vzdialilSaOdBomby = false;
+                //Console.WriteLine("zmenil som na false");
             }
         }
         public bool TuJeBrana(int x, int y)
@@ -233,7 +252,12 @@ namespace Bomberman
                     UpracVybuch(v.x, v.y);
                 }
             }
+            foreach (var v in removeList)
+            {
+                vybuchujuciList.Remove(v);
+            }
             removeList.Clear();
+            //Console.WriteLine("Cakajuci list size "+cakajuciList.Count+", vybuchujuci list size: "+vybuchujuciList.Count);
         }
 
         static void VykresliVybuch(int x, int y)
@@ -289,6 +313,7 @@ namespace Bomberman
         }
         static void UpracVybuch(int x, int y)
         {
+            //Console.WriteLine("volam uprac vybuch");
             char c;
             Mapa.Set(x, y, 'n');
             for (int i = 1; i <= dosah; i++)
