@@ -19,6 +19,7 @@ namespace Bomberman
         Mapa m;
         Bitmap frame;
         public static Form1 MojFormular;
+        TimeSpan ts;
 
         enum Sipky { ziadna, vpravo, vlavo, hore, dole };
         public enum Stav { uvod, bezi, vyhra, prehra, vyhodnotenie};
@@ -38,7 +39,7 @@ namespace Bomberman
             else return Sipky.ziadna;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void BNovaHra_Click(object sender, EventArgs e)
         {
             PrejdiDoStavu(Stav.bezi);
             g = Graphics.FromImage(frame);
@@ -52,26 +53,43 @@ namespace Bomberman
             switch (novyStav)
             {
                 case Stav.uvod:
+                    TCasomiera.Visible = false;
                     stav = Stav.uvod;
                     break;
                 case Stav.bezi:
-                    button1.Visible = false;
+                    BNovaHra.Visible = false;
+                    BSkusitZnovu.Visible = false;
+                    BVzdatTo.Visible = false;
+                    TCasomiera.Visible = true;
+                    Vybuch.cakajuciList.Clear();               
                     this.Focus();
                     timer1.Enabled = true;
+                    timer2.Enabled = true;
+                    ts = new TimeSpan(0, 4, 0);
                     stav = Stav.bezi;
                     break;
                 case Stav.vyhra:
                     timer1.Enabled = false;
+                    TCasomiera.Visible = false;
+                    Bitmap youveWon = new Bitmap("vyhra.png");
+                    g.DrawImage(youveWon, 0, 0);
+                    this.Invalidate();
+                    BNovaHra.Visible = true;
                     stav = Stav.vyhra;
                     break;
                 case Stav.prehra:
                     timer1.Enabled = false;
                     timer2.Enabled = true;
+                    TCasomiera.Visible = false;
                     stav = Stav.prehra;
                     break;
                 case Stav.vyhodnotenie:
-                    button1.Visible = true;
                     timer2.Enabled = false;
+                    Bitmap youveLost = new Bitmap("youveLost2.png");
+                    g.DrawImage(youveLost,0,0);
+                    this.Invalidate();
+                    BSkusitZnovu.Visible = true;
+                    BVzdatTo.Visible = true;
                     stav = Stav.vyhodnotenie;
                     break;
                 default:
@@ -89,7 +107,7 @@ namespace Bomberman
         private void timer1_Tick(object sender, EventArgs e)
         {
             KeyStateInfo medzernik = KeyboardInfo.GetKeyState(Keys.Space);
-            if (medzernik.IsPressed && Vybuch.MozesBombovat(m.Feri.px + 20, m.Feri.py + 20)) 
+            if (medzernik.IsPressed && Vybuch.MozesBombovat()) 
                     m.TuDajBombu(m.Feri.px + 20, m.Feri.py + 20, m);
             Vybuch.VyhodnotBomby();
             novex = m.Feri.px;
@@ -117,19 +135,45 @@ namespace Bomberman
             {
                 m.Feri.px = novex;
                 m.Feri.py = novey;
+                m.Prekresli(g);
             }
-            m.Prekresli(g);
+           
             if (stav==Stav.prehra)
             {
                 Bitmap boom = new Bitmap("boom.png");
                 g.DrawImage(boom, frame.Width/2 - boom.Width/2,frame.Height/2 - boom.Height/2);
             }
+            TCasomiera.Text = ts.Minutes + ":" + ts.Seconds;
             this.Invalidate();           
         }
 
         private void timer2_Tick(object sender, EventArgs e)
         {
-            PrejdiDoStavu(Stav.vyhodnotenie);
+            if (stav==Stav.prehra) PrejdiDoStavu(Stav.vyhodnotenie);
+            else
+            {
+                ts.Subtract(TimeSpan.FromMinutes(1));
+            }
+        }
+
+        private void BVzdatTo_Click(object sender, EventArgs e)
+        {
+            Form1.MojFormular.Close();
+        }
+
+        private void BSkusitZnovu_Click(object sender, EventArgs e)
+        {
+            BNovaHra_Click(sender,e);
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
         }
     }  
 }

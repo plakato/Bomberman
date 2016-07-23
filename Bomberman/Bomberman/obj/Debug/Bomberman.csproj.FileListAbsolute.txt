@@ -16,3 +16,5 @@ C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\boom.png
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\bman2.png
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\background.png
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\youveLost2.png
+C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\vyhra.png

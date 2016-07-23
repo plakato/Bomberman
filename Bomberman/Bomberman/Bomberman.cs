@@ -20,7 +20,7 @@ namespace Bomberman
         int sx;         //sirka stvorceka v pixeloch
         int branax;
         int branay;
-        bool BranaJeOtvorena = true;
+        public static bool BranaJeOtvorena = false;
         Bitmap[] ikonky;
         public static Bitmap bmanBitmapa;
         public Bman Feri;
@@ -55,6 +55,7 @@ namespace Bomberman
                         {
                             branax = i;
                             branay = j;
+                            Console.WriteLine("Brana: {0},{1}", branax, branay);
                         }
                         kamen++;
                     }
@@ -101,11 +102,11 @@ namespace Bomberman
             return vystup;
         }
 
-        int PoziciaBx(int x)
+        public int PoziciaBx(int x)
         {
             return (int)(x / sx);
         }
-        int PoziciaBy(int y)
+        public int PoziciaBy(int y)
         {
             return (int)(y / sx);
         }
@@ -117,10 +118,11 @@ namespace Bomberman
             int i = PoziciaBy(y);
             if (mapa[i, j] == 'P' || mapa[i, j] == 'K') vystup = true;
             else if (mapa[i, j] == 'B') ;
-            else if (mapa[i, j] == 'G') ;
-            else if (mapa[i, j] != 'n')
+            else if (mapa[i, j] == 'G')
+            { if (Feri.JevBrane(sx)) return true; }
+            else if (mapa[i, j] != 'n' && mapa[i, j] != 'G')
             {
-                Bman.Umrel();
+                Feri.Umrel();
                 Form1.MojFormular.PrejdiDoStavu(Form1.Stav.prehra);
             }
             return vystup;
@@ -130,7 +132,7 @@ namespace Bomberman
         {
             int j = PoziciaBx(x);
             int i = PoziciaBy(y);
-            if (mapa[i, j] != 'B')
+            if (mapa[i, j] != 'B' && mapa[i,j] !='G')
             {
                 mapa[i, j] = 'B';
                 Vybuch v = new Vybuch(i, j, m);
@@ -138,7 +140,11 @@ namespace Bomberman
         }
         public bool TuJeBrana(int x, int y)
         {
-            if (x == branax && y == branay && mapa[x, y] == 'k') return true;
+            if (x == branax && y == branay)
+            {
+                BranaJeOtvorena = true;
+                return true;
+            }
             return false;
         }
         public static char Get(int x, int y)
@@ -167,9 +173,21 @@ namespace Bomberman
             py = y;
             radius = r;
         }
-        public static void Umrel()
+        public void Umrel()
         {
             Mapa.bmanBitmapa = new Bitmap("smrtka.png");
+        }
+        public bool JevBrane(int sx)
+        {
+            int x = (px + (radius / 2)) / sx;
+            int y = (py + (radius / 2)) / sx;
+            char c = Mapa.Get(y,x);
+            if (c == 'G' && Mapa.BranaJeOtvorena)
+            {
+                Form1.MojFormular.PrejdiDoStavu(Form1.Stav.vyhra);
+                return true;
+            }
+            return false;
         }
     }
 
@@ -240,19 +258,18 @@ namespace Bomberman
         }
         static bool MozeVybuchPokracovat(int x, int y,int i, char koniec, char most)
         {
+            char[] zakazVojst = { 'P', 'k', 'G' ,'K','B'};
             char c;
             c = Mapa.Get(x , y);
             bool v = true;
-                if (c == 'P' || c=='k') v = false;
+                if (zakazVojst.Contains(c)) v = false;
                  if (c == 'K')
                 {
                     Mapa.Set(x, y, 'k');
-                    v=false;
                 }
                  if (c == 'B')
                 {
                     NajdiVybuch(x, y).doba = 11;        //10 je doba, pri ktorej bomba vybuchuje
-                    v = false; ;
                 }
                 if (c=='n')
                 {
@@ -304,7 +321,7 @@ namespace Bomberman
             }
         }
 
-        public static bool MozesBombovat(int x, int y)
+        public static bool MozesBombovat()
         {
             if (cakajuciList.Count < maxNaraz)
             {

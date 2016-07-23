@@ -110,6 +110,12 @@
     <Content Include="mapa1.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="vyhra.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="youveLost2.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\background.png" />
     <Content Include="smrtka.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
