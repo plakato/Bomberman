@@ -97,15 +97,16 @@
             // 
             // TCasomiera
             // 
-            this.TCasomiera.AutoSize = true;
-            this.TCasomiera.BackColor = System.Drawing.Color.Red;
-            this.TCasomiera.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.TCasomiera.BackColor = System.Drawing.Color.Firebrick;
+            this.TCasomiera.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.TCasomiera.Font = new System.Drawing.Font("Microsoft YaHei UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TCasomiera.Location = new System.Drawing.Point(687, 602);
+            this.TCasomiera.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.TCasomiera.Location = new System.Drawing.Point(669, 613);
             this.TCasomiera.Name = "TCasomiera";
-            this.TCasomiera.Size = new System.Drawing.Size(121, 30);
+            this.TCasomiera.Size = new System.Drawing.Size(60, 30);
             this.TCasomiera.TabIndex = 3;
             this.TCasomiera.Text = "casomiera";
+            this.TCasomiera.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.TCasomiera.Visible = false;
             this.TCasomiera.Click += new System.EventHandler(this.label1_Click);
             // 
@@ -114,7 +115,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Bomberman.Properties.Resources.background;
-            this.ClientSize = new System.Drawing.Size(734, 611);
+            this.ClientSize = new System.Drawing.Size(823, 649);
             this.Controls.Add(this.TCasomiera);
             this.Controls.Add(this.BVzdatTo);
             this.Controls.Add(this.BSkusitZnovu);
@@ -124,7 +125,6 @@
             this.Text = "Bomberman";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

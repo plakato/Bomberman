@@ -143,7 +143,7 @@ namespace Bomberman
                 Bitmap boom = new Bitmap("boom.png");
                 g.DrawImage(boom, frame.Width/2 - boom.Width/2,frame.Height/2 - boom.Height/2);
             }
-            TCasomiera.Text = ts.Minutes + ":" + ts.Seconds;
+            TCasomiera.Text =ts.ToString(@"m\:ss");
             this.Invalidate();           
         }
 
@@ -152,7 +152,9 @@ namespace Bomberman
             if (stav==Stav.prehra) PrejdiDoStavu(Stav.vyhodnotenie);
             else
             {
-                ts.Subtract(TimeSpan.FromMinutes(1));
+                ts = ts.Subtract(TimeSpan.FromSeconds(1));
+                if (ts == TimeSpan.FromSeconds(0))
+                    PrejdiDoStavu(Stav.prehra);
             }
         }
 
