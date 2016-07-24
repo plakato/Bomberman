@@ -16,28 +16,26 @@ namespace Bomberman
         static char[,] mapa;
         int sirka;          //hracieho pola
         int vyska;
-        int pocetKamenov;
         int sx;         //sirka stvorceka v pixeloch
         int branax;
         int branay;
         public static bool BranaJeOtvorena = false;
         bool vzdialilSaOdBomby = true;
         Bitmap[] ikonky;
-        public static Bitmap bmanBitmapa;
         public Bman Feri;
+        public List<Duch> Duchovia = new List<Duch>();
 
         public Mapa(String cestaMapa, String cestaIkonky, Graphics g)
         {
             NacitajIkonky(cestaIkonky);
             NacitajMapu(cestaMapa);
-            Feri = new Bman(52, 52, 35);
-            bmanBitmapa = new Bitmap("bman2.png");
+            Feri = new Bman(52, 52, 35, new Bitmap("bman2.png"));
         }
 
         public void NacitajMapu(String cesta)
         {
             System.IO.StreamReader sr = new System.IO.StreamReader(cesta);
-            pocetKamenov = int.Parse(sr.ReadLine());
+            int pocetKamenov = int.Parse(sr.ReadLine());
             sirka = int.Parse(sr.ReadLine());
             vyska = int.Parse(sr.ReadLine());           
             mapa = new char[vyska, sirka];
@@ -50,7 +48,7 @@ namespace Bomberman
                 String riadok = sr.ReadLine();
                 for (int j = 0; j < sirka; j++)
                 {
-                    if (riadok[j]=='K')
+                    if (riadok[j]=='K')                     //nahodny kamen bude ukryvat vychod
                     {
                         if (kamen==brana)
                         {
@@ -60,12 +58,17 @@ namespace Bomberman
                         }
                         kamen++;
                     }
-                    mapa[i, j] = riadok[j];
+                    if (riadok[j]=='D')                 // vytvorim si duchov
+                    {
+                        Duch buuu = new Duch(j * sx, i * sx, 35, new Bitmap("duch1.png"));
+                        Duchovia.Add(buuu);
+                        mapa[i,j] = 'n';
+                    }
+                    else mapa[i, j] = riadok[j];
                 }
             }
             sr.Close();
         }
-
         public void NacitajIkonky(String cesta)
         {
             Bitmap bmp = new Bitmap(cesta);
@@ -79,7 +82,6 @@ namespace Bomberman
                 ikonky[i] = bmp.Clone(rect, System.Drawing.Imaging.PixelFormat.DontCare);
             }
         }
-
         public void Prekresli(Graphics g)
         {
             for (int y = 0; y < vyska; y++)
@@ -91,44 +93,38 @@ namespace Bomberman
                     g.DrawImage(ikonky[index], sx * x, sx * y);
                 }
             }
-            g.DrawImage(bmanBitmapa, Feri.px, Feri.py);
-            if (vzdialilSaOdBomby)
+            g.DrawImage(Feri.bitmapa, Feri.px, Feri.py);
+            foreach (var buuu in Duchovia)
             {
-                //g.DrawRectangle(Pens.Yellow, 0, 0, 10, 10);
+                g.DrawImage(buuu.bitmapa, buuu.px, buuu.py);
             }
             
         }
-        public bool MozeBmanVkrocit(int x, int y)                   //kontroluje ci nejaky roh postavicky uz je na skale
+
+        public bool MozePostavickaVkrocit(int x, int y, Postavicka p)                   //kontroluje ci nejaky roh postavicky uz je na skale
         {
             bool vystup = true;
-            if (JeSkalaAleboBomba(x, y)) vystup = false;
-            if (JeSkalaAleboBomba(x+ Feri.radius, y)) vystup = false;
-            if (JeSkalaAleboBomba(x, y+Feri.radius)) vystup = false;
-            if (JeSkalaAleboBomba(x+Feri.radius, y+Feri.radius)) vystup = false;
-            //Console.WriteLine("Pozicia " + PoziciaBx(Feri.px + Feri.radius / 2) + "," + PoziciaBy(Feri.py + Feri.radius / 2) + " co tam je: " + mapa[PoziciaBx(Feri.py + Feri.radius / 2), PoziciaBy(Feri.px + Feri.radius / 2)]);
-            if (mapa[PoziciaBy(Feri.py + Feri.radius / 2),                  //zistim, ci je stred bombermana mimo bomby - teda uz na nu nemoze vkrocit
-                     PoziciaBx(Feri.px + Feri.radius / 2)] != 'B')
+            if (JeSkalaAleboBomba(x, y, p)) vystup = false;
+            if (JeSkalaAleboBomba(x + p.radius, y, p)) vystup = false;
+            if (JeSkalaAleboBomba(x, y + p.radius, p)) vystup = false;
+            if (JeSkalaAleboBomba(x + p.radius, y + p.radius, p)) vystup = false;
+
+            if (p==Feri && mapa[PoziciaVMape(Feri.py + Feri.radius / 2),                  //zistim, ci je stred bombermana mimo bomby - teda uz na nu nemoze vkrocit
+                                PoziciaVMape(Feri.px + Feri.radius / 2)] != 'B')
             {
                 vzdialilSaOdBomby = true;
-                //Console.WriteLine("zmenil som na true");
             }
                 
             return vystup;
         }
-
-        public int PoziciaBx(int x)
+        public int PoziciaVMape(int x)
         {
             return (int)(x / sx);
         }
-        public int PoziciaBy(int y)
+        bool JeSkalaAleboBomba(int x, int y, Postavicka p)
         {
-            return (int)(y / sx);
-        }
-
-        bool JeSkalaAleboBomba(int x, int y)
-        {
-            int j = PoziciaBx(x);
-            int i = PoziciaBy(y);
+            int j = PoziciaVMape(x);
+            int i = PoziciaVMape(y);
             if (mapa[i, j] == 'P' || mapa[i, j] == 'K') return true;
             else if (mapa[i, j] == 'B')
             {
@@ -139,16 +135,17 @@ namespace Bomberman
                 return true;
             else if (mapa[i, j] != 'n' && mapa[i, j] != 'G')
             {
-                Feri.Umrel();
-                Form1.MojFormular.PrejdiDoStavu(Form1.Stav.prehra);
+                p.Umrel();
+                if (p==Feri)
+                    Form1.MojFormular.PrejdiDoStavu(Form1.Stav.prehra);
             }
             return false;
         }
 
         public void TuDajBombu(int x, int y, Mapa m)
         {
-            int j = PoziciaBx(x);
-            int i = PoziciaBy(y);
+            int j = PoziciaVMape(x);
+            int i = PoziciaVMape(y);
             if (mapa[i, j] != 'B' && mapa[i,j] !='G')
             {
                 mapa[i, j] = 'B';
@@ -161,7 +158,6 @@ namespace Bomberman
         {
             if (x == branax && y == branay)
             {
-                BranaJeOtvorena = true;
                 return true;
             }
             return false;
@@ -182,19 +178,26 @@ namespace Bomberman
         public int px;
         public int py;
         public int radius;
-    }
+        public Bitmap bitmapa;
 
-    public class Bman : Postavicka
-    {
-        public Bman(int x, int y, int r)
+        public Postavicka(int x, int y, int r, Bitmap bmp)
         {
             px = x;
             py = y;
             radius = r;
+            bitmapa = bmp;
         }
         public void Umrel()
         {
-            Mapa.bmanBitmapa = new Bitmap("smrtka.png");
+            this.bitmapa = new Bitmap("smrtka.png");
+        }
+    }
+
+    public class Bman : Postavicka
+    {
+        public Bman(int x, int y, int r, Bitmap bmp) : base(x,y,r,bmp)
+        {
+
         }
         public bool JevBrane(int sx)
         {
@@ -207,6 +210,16 @@ namespace Bomberman
                 return true;
             }
             return false;
+        }
+
+    }
+    public class Duch : Postavicka
+    {
+        int xsmer;
+        int ysmer;
+        public Duch(int x, int y, int r,Bitmap bmp) : base(x,y, r,bmp)
+        {
+
         }
     }
 

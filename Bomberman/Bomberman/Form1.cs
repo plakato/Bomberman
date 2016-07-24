@@ -44,7 +44,7 @@ namespace Bomberman
             PrejdiDoStavu(Stav.bezi);
             g = Graphics.FromImage(frame);
             this.DoubleBuffered = true;
-            m = new Mapa("mapa1.txt", "ikonky.png", g);                     
+            m = new Mapa("mapa1sDUchmi.txt", "ikonky.png", g);                     
             m.Prekresli(g);
         }
 
@@ -132,13 +132,22 @@ namespace Bomberman
                 default:
                     break;
             }
-            if (m.MozeBmanVkrocit(novex, novey))
+            foreach (var buuu in m.Duchovia)
+            {
+                if (m.MozePostavickaVkrocit(buuu.px, buuu.py, buuu))
+                {
+                   // buuu.px = x;
+                   // buuu.py = novey;
+                }
+                m.Prekresli(g);
+            }
+
+            if (m.MozePostavickaVkrocit(novex, novey, m.Feri))
             {
                 m.Feri.px = novex;
                 m.Feri.py = novey;
                 m.Prekresli(g);
             }
-           // m.Prekresli(g);
 
             if (stav==Stav.prehra)
             {
