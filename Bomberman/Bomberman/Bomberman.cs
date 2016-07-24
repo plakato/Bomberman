@@ -23,13 +23,14 @@ namespace Bomberman
         bool vzdialilSaOdBomby = true;
         Bitmap[] ikonky;
         public Bman Feri;
-        public List<Duch> Duchovia = new List<Duch>();
+        public List<Postavicka> Postavicky = new List<Postavicka>();
 
         public Mapa(String cestaMapa, String cestaIkonky, Graphics g)
         {
             NacitajIkonky(cestaIkonky);
             NacitajMapu(cestaMapa);
             Feri = new Bman(52, 52, 35, new Bitmap("bman2.png"));
+            Postavicky.Add(Feri);
         }
 
         public void NacitajMapu(String cesta)
@@ -60,8 +61,8 @@ namespace Bomberman
                     }
                     if (riadok[j]=='D')                 // vytvorim si duchov
                     {
-                        Duch buuu = new Duch(j * sx, i * sx, 35, new Bitmap("duch1.png"));
-                        Duchovia.Add(buuu);
+                        Duch buuu = new Duch(j * sx, i * sx, 46, new Bitmap("duch1.png"));
+                        Postavicky.Add(buuu);
                         mapa[i,j] = 'n';
                     }
                     else mapa[i, j] = riadok[j];
@@ -93,10 +94,9 @@ namespace Bomberman
                     g.DrawImage(ikonky[index], sx * x, sx * y);
                 }
             }
-            g.DrawImage(Feri.bitmapa, Feri.px, Feri.py);
-            foreach (var buuu in Duchovia)
+            foreach (var p in Postavicky)
             {
-                g.DrawImage(buuu.bitmapa, buuu.px, buuu.py);
+                g.DrawImage(p.bitmapa, p.px, p.py);
             }
             
         }
@@ -125,7 +125,8 @@ namespace Bomberman
         {
             int j = PoziciaVMape(x);
             int i = PoziciaVMape(y);
-            if (mapa[i, j] == 'P' || mapa[i, j] == 'K') return true;
+            if (mapa[i, j] == 'P' || mapa[i, j] == 'K')
+                return true;
             else if (mapa[i, j] == 'B')
             {
                 if (vzdialilSaOdBomby) return true;
@@ -133,7 +134,7 @@ namespace Bomberman
             }
             else if (mapa[i, j] == 'G' && Feri.JevBrane(sx))
                 return true;
-            else if (mapa[i, j] != 'n' && mapa[i, j] != 'G')
+            else if (mapa[i, j] != 'n' && mapa[i, j] != 'G' && mapa[i,j] != 'k')
             {
                 p.Umrel();
                 if (p==Feri)
@@ -179,17 +180,27 @@ namespace Bomberman
         public int py;
         public int radius;
         public Bitmap bitmapa;
+        public int xzmena;
+        public int yzmena;
+        public static List<Postavicka> RemovePostavicky = new List<Postavicka>();
 
         public Postavicka(int x, int y, int r, Bitmap bmp)
         {
             px = x;
             py = y;
             radius = r;
+            xzmena = 0;
+            yzmena = 0;
             bitmapa = bmp;
         }
-        public void Umrel()
+        public virtual void Umrel()
         {
             this.bitmapa = new Bitmap("smrtka.png");
+            RemovePostavicky.Add(this);
+        }
+        public virtual void ZmenSmer()
+        {
+
         }
     }
 
@@ -211,16 +222,34 @@ namespace Bomberman
             }
             return false;
         }
-
     }
     public class Duch : Postavicka
     {
-        int xsmer;
-        int ysmer;
-        public Duch(int x, int y, int r,Bitmap bmp) : base(x,y, r,bmp)
-        {
+        static Random rnd = new Random(4);
+        int[] smery = { 0, 0, -5, +5 };
+        int i;
 
+        public Duch(int x, int y, int r, Bitmap bmp) : base(x,y,r,bmp)
+        {
+            i = rnd.Next(4);
+            xzmena = smery[i];
+            yzmena = smery[(i + 2) % 4];
         }
+        public override void ZmenSmer()
+        {
+            i = (i + 1) % 4;
+            xzmena = smery[i];
+            yzmena = smery[(i + 2) % 4];
+        }
+        public override void Umrel()
+        {
+            base.Umrel();
+            this.smery[3] = 0;
+            this.smery[2] = 0;
+            this.xzmena = 0;
+            this.yzmena = 0;
+        }
+
     }
 
     public class Vybuch
@@ -326,7 +355,6 @@ namespace Bomberman
         }
         static void UpracVybuch(int x, int y)
         {
-            //Console.WriteLine("volam uprac vybuch");
             char c;
             Mapa.Set(x, y, 'n');
             for (int i = 1; i <= dosah; i++)
@@ -356,6 +384,16 @@ namespace Bomberman
                 if (c == 'P' || c == 'K') break;
                 else if (m.TuJeBrana(x, y - i)) Mapa.Set(x, y - i, 'G');
                 else Mapa.Set(x , y-i, 'n');
+            }
+
+            foreach (var p in Postavicka.RemovePostavicky)      //odstrani vybuchnute postavicky
+            {
+                m.Postavicky.Remove(p);
+            }
+
+            if (m.Postavicky.Count==1)              //ak uz zije len Bman, otvor mu branu
+            {
+                Mapa.BranaJeOtvorena = true;
             }
         }
 

@@ -48,6 +48,13 @@ namespace Bomberman
             m.Prekresli(g);
         }
 
+        public void Resetuj()
+        {
+            Vybuch.cakajuciList.Clear();
+            Vybuch.vybuchujuciList.Clear();
+            Postavicka.RemovePostavicky.Clear();
+        }
+
         public void PrejdiDoStavu(Stav novyStav)
         {
             switch (novyStav)
@@ -57,12 +64,11 @@ namespace Bomberman
                     stav = Stav.uvod;
                     break;
                 case Stav.bezi:
+                    Resetuj();
                     BNovaHra.Visible = false;
                     BSkusitZnovu.Visible = false;
                     BVzdatTo.Visible = false;
-                    TCasomiera.Visible = true;
-                    Vybuch.cakajuciList.Clear();
-                    Vybuch.vybuchujuciList.Clear();             
+                    TCasomiera.Visible = true;             
                     this.Focus();
                     timer1.Enabled = true;
                     timer2.Enabled = true;
@@ -72,9 +78,6 @@ namespace Bomberman
                 case Stav.vyhra:
                     timer1.Enabled = false;
                     TCasomiera.Visible = false;
-                    Bitmap youveWon = new Bitmap("vyhra.png");
-                    g.DrawImage(youveWon, 0, 0);
-                    this.Invalidate();
                     BNovaHra.Visible = true;
                     stav = Stav.vyhra;
                     break;
@@ -103,59 +106,67 @@ namespace Bomberman
            e.Graphics.DrawImage(frame, 0, 0);
         }
 
-        int novex;
-        int novey;
         private void timer1_Tick(object sender, EventArgs e)
         {
             KeyStateInfo medzernik = KeyboardInfo.GetKeyState(Keys.Space);
             if (medzernik.IsPressed && Vybuch.MozesBombovat()) 
                     m.TuDajBombu(m.Feri.px + m.Feri.radius/2, m.Feri.py + m.Feri.radius / 2, m);
             Vybuch.VyhodnotBomby();
-            novex = m.Feri.px;
-            novey = m.Feri.py;
+            m.Feri.xzmena = 0;
+            m.Feri.yzmena = 0;
             switch (KtoraJeStlacena())
             {
                 case Sipky.ziadna:
                     break;
                 case Sipky.hore:
-                    novey = novey - 10;
+                    m.Feri.yzmena = -10;
                     break;
                 case Sipky.dole:
-                    novey = novey + 10;
+                    m.Feri.yzmena = 10;
                     break;
                 case Sipky.vpravo:
-                    novex = novex + 10;
+                    m.Feri.xzmena = 10;
                     break;
                 case Sipky.vlavo:
-                    novex = novex - 10;
+                    m.Feri.xzmena = -10;
                     break;
                 default:
                     break;
             }
-            foreach (var buuu in m.Duchovia)
+
+            PohniPostavickamiAPrekresli();          
+        }
+
+        public void PohniPostavickamiAPrekresli()
+        {
+            foreach (var p in m.Postavicky)
             {
-                if (m.MozePostavickaVkrocit(buuu.px, buuu.py, buuu))
+                for (int i = 0; i < 4; i++)
                 {
-                   // buuu.px = x;
-                   // buuu.py = novey;
+                    if (m.MozePostavickaVkrocit(p.px + p.xzmena, p.py + p.yzmena, p))
+                    {
+                        p.px += p.xzmena;
+                        p.py += p.yzmena;
+                        break;
+                    }
+                    else p.ZmenSmer();
                 }
-                m.Prekresli(g);
             }
+            m.Prekresli(g);
 
-            if (m.MozePostavickaVkrocit(novex, novey, m.Feri))
-            {
-                m.Feri.px = novex;
-                m.Feri.py = novey;
-                m.Prekresli(g);
-            }
-
-            if (stav==Stav.prehra)
+            if (stav == Stav.prehra)
             {
                 Bitmap boom = new Bitmap("boom.png");
-                g.DrawImage(boom, frame.Width/2 - boom.Width/2,frame.Height/2 - boom.Height/2);
+                g.DrawImage(boom, frame.Width / 2 - boom.Width / 2, frame.Height / 2 - boom.Height / 2);
             }
+            if (stav == Stav.vyhra)
+            {
+                Bitmap youveWon = new Bitmap("vyhra.png");
+                g.DrawImage(youveWon, 0, 0);
+            }
+
             TCasomiera.Text = ts.ToString(@"m\:ss");
-            this.Invalidate();           
+            this.Invalidate();
         }
 
         private void timer2_Tick(object sender, EventArgs e)

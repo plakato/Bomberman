@@ -18,5 +18,5 @@ C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\background.png
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\youveLost2.png
 C:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\vyhra.png
-c:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\duch1.png
 c:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\mapa1sDUchmi.txt
+c:\Users\Marcel\Patka\Karlovka\1BcLS\zapoctak-bomberman\Bomberman\Bomberman\bin\Debug\duch1.png
