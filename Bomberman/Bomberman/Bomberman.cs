@@ -137,8 +137,6 @@ namespace Bomberman
             else if (mapa[i, j] != 'n' && mapa[i, j] != 'G' && mapa[i,j] != 'k')
             {
                 p.Umrel();
-                if (p==Feri)
-                    Form1.MojFormular.PrejdiDoStavu(Form1.Stav.prehra);
             }
             return false;
         }
@@ -222,6 +220,11 @@ namespace Bomberman
             }
             return false;
         }
+        public override void Umrel()
+        {
+            base.Umrel();
+            Form1.MojFormular.PrejdiDoStavu(Form1.Stav.prehra);
+        }
     }
     public class Duch : Postavicka
     {
@@ -248,6 +251,15 @@ namespace Bomberman
             this.smery[2] = 0;
             this.xzmena = 0;
             this.yzmena = 0;
+        }
+
+        public void ZistiAVyhodnotDotykSBmanom(Bman f)
+        {
+            if (this.px <= f.px + f.radius &&
+                this.py <= f.py + f.radius &&
+                this.px + this.radius >= f.px &&
+                this.py + this.radius >= f.py)
+                f.Umrel();
         }
 
     }

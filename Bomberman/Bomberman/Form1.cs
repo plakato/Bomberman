@@ -151,6 +151,12 @@ namespace Bomberman
                     }
                     else p.ZmenSmer();
                 }
+
+                if (p is Duch)
+                {
+                    Duch buuu = (Duch)p;
+                    buuu.ZistiAVyhodnotDotykSBmanom(m.Feri);
+                }
             }
             m.Prekresli(g);
 
