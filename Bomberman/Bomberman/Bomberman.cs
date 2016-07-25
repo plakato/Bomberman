@@ -109,10 +109,13 @@ namespace Bomberman
             if (JeSkalaAleboBomba(x, y + p.radius, p)) vystup = false;
             if (JeSkalaAleboBomba(x + p.radius, y + p.radius, p)) vystup = false;
 
-            if (p==Feri && mapa[PoziciaVMape(Feri.py + Feri.radius / 2),                  //zistim, ci je stred bombermana mimo bomby - teda uz na nu nemoze vkrocit
-                                PoziciaVMape(Feri.px + Feri.radius / 2)] != 'B')
+            if (p==Feri)               //zistim, ci je stred bombermana mimo bomby - teda uz na nu nemoze vkrocit
             {
-                vzdialilSaOdBomby = true;
+                if (mapa[PoziciaVMape(y), PoziciaVMape(x)] == 'n' &&
+                    mapa[PoziciaVMape(y + p.radius), PoziciaVMape(x + p.radius)] == 'n')
+                {
+                    vzdialilSaOdBomby = true;
+                }
             }
                 
             return vystup;
@@ -255,8 +258,8 @@ namespace Bomberman
 
         public void ZistiAVyhodnotDotykSBmanom(Bman f)
         {
-            if (this.px <= f.px + f.radius &&
-                this.py <= f.py + f.radius &&
+            if (this.px <= f.px + f.radius &&           //podmienka ktora plati <=> 2 obdlzniky sa prelinaju 
+                this.py <= f.py + f.radius &&           //(X2' >= X1 && X1' <= X2) && (Y2' >= Y1 && Y1' <= Y2)
                 this.px + this.radius >= f.px &&
                 this.py + this.radius >= f.py)
                 f.Umrel();
