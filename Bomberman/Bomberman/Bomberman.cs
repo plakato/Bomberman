@@ -29,7 +29,7 @@ namespace Bomberman
         {
             NacitajIkonky(cestaIkonky);
             NacitajMapu(cestaMapa);
-            Feri = new Bman(52, 52, 35, new Bitmap("bman2.png"));
+            Feri = new Bman(52, 52, 35, new Bitmap("bman.png"));
             Postavicky.Add(Feri);
         }
 
@@ -109,7 +109,7 @@ namespace Bomberman
             if (JeSkalaAleboBomba(x, y + p.radius, p)) vystup = false;
             if (JeSkalaAleboBomba(x + p.radius, y + p.radius, p)) vystup = false;
 
-            if (p==Feri)               //zistim, ci je stred bombermana mimo bomby - teda uz na nu nemoze vkrocit
+            if (p==Feri)               //zistim, ci je bomberman mimo bomby - teda uz na nu nemoze vkrocit
             {
                 if (mapa[PoziciaVMape(y), PoziciaVMape(x)] == 'n' &&
                     mapa[PoziciaVMape(y + p.radius), PoziciaVMape(x + p.radius)] == 'n')

@@ -14,15 +14,17 @@ namespace Bomberman
             ClientSize = new Size(50 * 15, 50 * 13);
             frame = new Bitmap(50 * 15, 50 * 13);
             KeyPreview = true;
+            this.DoubleBuffered = true;
         }
         Graphics g;
         Mapa m;
         Bitmap frame;
         public static Form1 MojFormular;
         TimeSpan ts;
+        int level;
 
         enum Sipky { ziadna, vpravo, vlavo, hore, dole };
-        public enum Stav { uvod, bezi, vyhra, prehra, vyhodnotenie};
+        public enum Stav { uvod, bezi, vyhra, prehra, vyhodnotenie, koniec};
         Stav stav = Stav.uvod;  
 
         static Sipky KtoraJeStlacena()
@@ -41,10 +43,10 @@ namespace Bomberman
 
         private void BNovaHra_Click(object sender, EventArgs e)
         {
-            PrejdiDoStavu(Stav.bezi);
+            level = 1;
             g = Graphics.FromImage(frame);
-            this.DoubleBuffered = true;
-            m = new Mapa("mapa1sDUchmi.txt", "ikonky.png", g);                     
+            PrejdiDoStavu(Stav.bezi);
+            m = new Mapa("mapa" + level.ToString() + ".txt", "ikonky.png", g);                     
             m.Prekresli(g);
         }
 
@@ -53,6 +55,12 @@ namespace Bomberman
             Vybuch.cakajuciList.Clear();
             Vybuch.vybuchujuciList.Clear();
             Postavicka.RemovePostavicky.Clear();
+            BNovaHra.Visible = false;
+            BSkusitZnovu.Visible = false;
+            BVzdatTo.Visible = false;
+            BDalsiLevel.Visible = false;
+            BReplay.Visible = false;
+            Bomberman.Mapa.BranaJeOtvorena = false;
         }
 
         public void PrejdiDoStavu(Stav novyStav)
@@ -65,10 +73,7 @@ namespace Bomberman
                     break;
                 case Stav.bezi:
                     Resetuj();
-                    BNovaHra.Visible = false;
-                    BSkusitZnovu.Visible = false;
-                    BVzdatTo.Visible = false;
-                    TCasomiera.Visible = true;             
+                    TCasomiera.Visible = true;        
                     this.Focus();
                     timer1.Enabled = true;
                     timer2.Enabled = true;
@@ -77,8 +82,9 @@ namespace Bomberman
                     break;
                 case Stav.vyhra:
                     timer1.Enabled = false;
+                    BDalsiLevel.Visible = true;
+                    BReplay.Visible = true;
                     TCasomiera.Visible = false;
-                    BNovaHra.Visible = true;
                     stav = Stav.vyhra;
                     break;
                 case Stav.prehra:
@@ -95,6 +101,14 @@ namespace Bomberman
                     BSkusitZnovu.Visible = true;
                     BVzdatTo.Visible = true;
                     stav = Stav.vyhodnotenie;
+                    break;
+                case Stav.koniec:
+                    Bitmap tbc = new Bitmap("toBeContinued.png");
+                    g.DrawImage(tbc, 0, 0);
+                    this.Invalidate();
+                    BDalsiLevel.Visible = false;
+                    BNovaHra.Visible = true;
+                    BNovaHra.Location = new System.Drawing.Point(Form1.MojFormular.Width/2 - BNovaHra.Width/2,(Form1.MojFormular.Height /4)*3);
                     break;
                 default:
                     break;
@@ -204,6 +218,24 @@ namespace Bomberman
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void BDalsiLevel_Click(object sender, EventArgs e)
+        {
+           if (level < 1)
+            {
+                level++;
+                BNovaHra_Click(sender, e);
+            }
+           else
+            {
+                PrejdiDoStavu(Stav.koniec);
+            }
+        }
+
+        private void BReplay_Click(object sender, EventArgs e)
+        {
+            BSkusitZnovu_Click(sender, e);
         }
     }  
 }

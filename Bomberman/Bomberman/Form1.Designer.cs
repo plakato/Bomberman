@@ -29,12 +29,15 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.BNovaHra = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.timer2 = new System.Windows.Forms.Timer(this.components);
             this.BSkusitZnovu = new System.Windows.Forms.Button();
             this.BVzdatTo = new System.Windows.Forms.Button();
             this.TCasomiera = new System.Windows.Forms.Label();
+            this.BDalsiLevel = new System.Windows.Forms.Button();
+            this.BReplay = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // BNovaHra
@@ -110,12 +113,48 @@
             this.TCasomiera.Visible = false;
             this.TCasomiera.Click += new System.EventHandler(this.label1_Click);
             // 
+            // BDalsiLevel
+            // 
+            this.BDalsiLevel.BackColor = System.Drawing.Color.Transparent;
+            this.BDalsiLevel.FlatAppearance.BorderSize = 0;
+            this.BDalsiLevel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Red;
+            this.BDalsiLevel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
+            this.BDalsiLevel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BDalsiLevel.Font = new System.Drawing.Font("Microsoft YaHei UI", 39.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BDalsiLevel.ForeColor = System.Drawing.Color.Blue;
+            this.BDalsiLevel.Location = new System.Drawing.Point(151, 449);
+            this.BDalsiLevel.Name = "BDalsiLevel";
+            this.BDalsiLevel.Size = new System.Drawing.Size(313, 82);
+            this.BDalsiLevel.TabIndex = 4;
+            this.BDalsiLevel.Text = "Ďalší level";
+            this.BDalsiLevel.UseVisualStyleBackColor = false;
+            this.BDalsiLevel.Visible = false;
+            this.BDalsiLevel.Click += new System.EventHandler(this.BDalsiLevel_Click);
+            // 
+            // BReplay
+            // 
+            this.BReplay.BackColor = System.Drawing.Color.Transparent;
+            this.BReplay.FlatAppearance.BorderSize = 0;
+            this.BReplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BReplay.Font = new System.Drawing.Font("Microsoft YaHei UI", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BReplay.ForeColor = System.Drawing.SystemColors.MenuHighlight;
+            this.BReplay.Image = ((System.Drawing.Image)(resources.GetObject("BReplay.Image")));
+            this.BReplay.Location = new System.Drawing.Point(439, 65);
+            this.BReplay.Name = "BReplay";
+            this.BReplay.Size = new System.Drawing.Size(322, 100);
+            this.BReplay.TabIndex = 5;
+            this.BReplay.UseVisualStyleBackColor = false;
+            this.BReplay.Visible = false;
+            this.BReplay.Click += new System.EventHandler(this.BReplay_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::Bomberman.Properties.Resources.background;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(823, 649);
+            this.Controls.Add(this.BReplay);
+            this.Controls.Add(this.BDalsiLevel);
             this.Controls.Add(this.TCasomiera);
             this.Controls.Add(this.BVzdatTo);
             this.Controls.Add(this.BSkusitZnovu);
@@ -136,6 +175,8 @@
         private System.Windows.Forms.Button BSkusitZnovu;
         private System.Windows.Forms.Button BVzdatTo;
         private System.Windows.Forms.Label TCasomiera;
+        private System.Windows.Forms.Button BDalsiLevel;
+        private System.Windows.Forms.Button BReplay;
     }
 }
 
