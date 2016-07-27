@@ -38,6 +38,7 @@
             this.TCasomiera = new System.Windows.Forms.Label();
             this.BDalsiLevel = new System.Windows.Forms.Button();
             this.BReplay = new System.Windows.Forms.Button();
+            this.BInfo = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // BNovaHra
@@ -122,7 +123,7 @@
             this.BDalsiLevel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BDalsiLevel.Font = new System.Drawing.Font("Microsoft YaHei UI", 39.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BDalsiLevel.ForeColor = System.Drawing.Color.Blue;
-            this.BDalsiLevel.Location = new System.Drawing.Point(151, 449);
+            this.BDalsiLevel.Location = new System.Drawing.Point(157, 461);
             this.BDalsiLevel.Name = "BDalsiLevel";
             this.BDalsiLevel.Size = new System.Drawing.Size(313, 82);
             this.BDalsiLevel.TabIndex = 4;
@@ -139,7 +140,7 @@
             this.BReplay.Font = new System.Drawing.Font("Microsoft YaHei UI", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BReplay.ForeColor = System.Drawing.SystemColors.MenuHighlight;
             this.BReplay.Image = ((System.Drawing.Image)(resources.GetObject("BReplay.Image")));
-            this.BReplay.Location = new System.Drawing.Point(439, 65);
+            this.BReplay.Location = new System.Drawing.Point(407, 85);
             this.BReplay.Name = "BReplay";
             this.BReplay.Size = new System.Drawing.Size(322, 100);
             this.BReplay.TabIndex = 5;
@@ -147,12 +148,30 @@
             this.BReplay.Visible = false;
             this.BReplay.Click += new System.EventHandler(this.BReplay_Click);
             // 
+            // BInfo
+            // 
+            this.BInfo.AutoSize = true;
+            this.BInfo.BackColor = System.Drawing.Color.Transparent;
+            this.BInfo.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("BInfo.BackgroundImage")));
+            this.BInfo.FlatAppearance.BorderSize = 0;
+            this.BInfo.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.BInfo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.BInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BInfo.Location = new System.Drawing.Point(685, 585);
+            this.BInfo.Name = "BInfo";
+            this.BInfo.Size = new System.Drawing.Size(50, 50);
+            this.BInfo.TabIndex = 6;
+            this.BInfo.Tag = "info";
+            this.BInfo.UseVisualStyleBackColor = false;
+            this.BInfo.Click += new System.EventHandler(this.BInfo_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(823, 649);
+            this.ClientSize = new System.Drawing.Size(753, 649);
+            this.Controls.Add(this.BInfo);
             this.Controls.Add(this.BReplay);
             this.Controls.Add(this.BDalsiLevel);
             this.Controls.Add(this.TCasomiera);
@@ -164,6 +183,7 @@
             this.Text = "Bomberman";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -177,6 +197,7 @@
         private System.Windows.Forms.Label TCasomiera;
         private System.Windows.Forms.Button BDalsiLevel;
         private System.Windows.Forms.Button BReplay;
+        private System.Windows.Forms.Button BInfo;
     }
 }
 

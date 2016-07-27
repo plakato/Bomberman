@@ -19,6 +19,9 @@ namespace Bomberman
         int sx;         //sirka stvorceka v pixeloch
         int branax;
         int branay;
+        int darcekx;
+        int darceky;
+        char darcek;
         public static bool BranaJeOtvorena = false;
         bool vzdialilSaOdBomby = true;
         Bitmap[] ikonky;
@@ -40,16 +43,23 @@ namespace Bomberman
             sirka = int.Parse(sr.ReadLine());
             vyska = int.Parse(sr.ReadLine());           
             mapa = new char[vyska, sirka];
+            int kamen = 0;
+            char c;
             Random rnd = new Random();
             int brana = rnd.Next(0, 32);
-            int kamen = 0;
-
+            int d = rnd.Next(0, 32);
+            while (d==brana)            //aby brana a darcek neboli na jednom policku
+            {
+                d = rnd.Next(0, 32);
+            }
+            
             for (int i = 0; i < vyska; i++)
             {
                 String riadok = sr.ReadLine();
                 for (int j = 0; j < sirka; j++)
                 {
-                    if (riadok[j]=='K')                     //nahodny kamen bude ukryvat vychod
+                    c = riadok[j];
+                    if (c=='K')                     //nahodny kamen bude ukryvat branu a darcek
                     {
                         if (kamen==brana)
                         {
@@ -57,15 +67,36 @@ namespace Bomberman
                             branay = j;
                             Console.WriteLine("Brana: {0},{1}", branax, branay);
                         }
+                        if (kamen==d)
+                        {
+                            darcekx = i;
+                            darceky = j;
+                            switch (Form1.MojFormular.level % 3)
+                            {
+                                case 1:
+                                    darcek = 'F';
+                                    break;
+                                case 2:
+                                    darcek = 'E';
+                                    break;
+                                case 0:
+                                    darcek = 'R';
+                                    break;
+                                default:
+                                    break;
+                            }
+                            Console.WriteLine("Darcek: {0},{1}", darcekx, darceky);
+                        }
                         kamen++;
                     }
-                    if (riadok[j]=='D')                 // vytvorim si duchov
+
+                    if (c=='D')                 // vytvorim si duchov
                     {
                         Duch buuu = new Duch(j * sx, i * sx, 46, new Bitmap("duch1.png"));
                         Postavicky.Add(buuu);
                         mapa[i,j] = 'n';
                     }
-                    else mapa[i, j] = riadok[j];
+                    else mapa[i, j] = c;
                 }
             }
             sr.Close();
@@ -90,7 +121,7 @@ namespace Bomberman
                 for (int x = 0; x < sirka; x++)
                 {
                     char c = mapa[y, x];
-                    int index = "nKPBV<>v^-|kG".IndexOf(c);
+                    int index = "nKPBV<>v^-|kGFER".IndexOf(c);     //nic,kamen,prekazka,bomba,vybuch+jehosmery,k=vybuchnuty kamen,gate,fire,extra bomb,rubber duck
                     g.DrawImage(ikonky[index], sx * x, sx * y);
                 }
             }
@@ -117,6 +148,7 @@ namespace Bomberman
                     vzdialilSaOdBomby = true;
                 }
             }
+            AkJeDarcekVezmi();
                 
             return vystup;
         }
@@ -128,16 +160,17 @@ namespace Bomberman
         {
             int j = PoziciaVMape(x);
             int i = PoziciaVMape(y);
-            if (mapa[i, j] == 'P' || mapa[i, j] == 'K')
+            char[] vybuch = { 'V', 'v', '>', '<', '^', '|', '-' };
+            if (mapa[i, j] == 'P' || mapa[i, j] == 'K' || mapa[i,j] == 'k')
                 return true;
             else if (mapa[i, j] == 'B')
             {
-                if (vzdialilSaOdBomby) return true;
+                if (vzdialilSaOdBomby || p != Feri) return true;
                 else return false;
             }
             else if (mapa[i, j] == 'G' && Feri.JevBrane(sx))
                 return true;
-            else if (mapa[i, j] != 'n' && mapa[i, j] != 'G' && mapa[i,j] != 'k')
+            else if (vybuch.Contains(mapa[i, j])) 
             {
                 p.Umrel();
             }
@@ -156,13 +189,48 @@ namespace Bomberman
                 //Console.WriteLine("zmenil som na false");
             }
         }
-        public bool TuJeBrana(int x, int y)
+        public bool TuJeBranaAleboDarcek(int x, int y)
         {
             if (x == branax && y == branay)
             {
+                mapa[x, y] = 'G';
+                return true;
+            }
+            if (x == darcekx && y == darceky)
+            {
+                mapa[x, y] = darcek;
                 return true;
             }
             return false;
+        }
+        void AkJeDarcekVezmi()
+        {
+            int j = (Feri.px + (Feri.radius / 2)) / sx;
+            int i = (Feri.py + (Feri.radius / 2)) / sx;
+            bool BolDarcek = false;
+            switch (mapa[i,j])
+            {
+                case 'F':
+                    Vybuch.dosah++;
+                    BolDarcek = true;
+                    break;
+                case 'E':
+                    Vybuch.maxNaraz++;
+                    BolDarcek = true;
+                    break;
+                case 'R':
+                    mapa[branax, branay] = 'G';
+                    BolDarcek = true;
+                    break;
+                default:
+                    break;
+            }
+            if (BolDarcek)
+            {
+                mapa[i, j] = 'n';
+                darcekx = -1;
+                darceky = -1;
+            }
         }
         public static char Get(int x, int y)
         {
@@ -270,10 +338,10 @@ namespace Bomberman
     public class Vybuch
     {
         int doba;
-        public static int dosah = 2;
+        public static int dosah = 1;
         int x;
         int y;
-        public static int maxNaraz = 3;
+        public static int maxNaraz = 1;
         public static List<Vybuch> cakajuciList = new List<Vybuch>();
         public static List<Vybuch> vybuchujuciList = new List<Vybuch>();
         public static List<Vybuch> removeList = new List<Vybuch>();
@@ -376,29 +444,25 @@ namespace Bomberman
             {
                 c = Mapa.Get(x + i, y);
                 if (c == 'P' || c == 'K') break;
-                else if (m.TuJeBrana(x + i, y)) Mapa.Set(x + i, y, 'G');
-                else Mapa.Set(x + i, y, 'n');
+                else if (!m.TuJeBranaAleboDarcek(x + i, y)) Mapa.Set(x + i, y, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x - i, y);
                 if (c == 'P' || c == 'K') break;
-                else if (m.TuJeBrana(x - i, y)) Mapa.Set(x - i, y, 'G');
-                else Mapa.Set(x - i, y, 'n');
+                else if (!m.TuJeBranaAleboDarcek(x - i, y)) Mapa.Set(x - i, y, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x , y + i);
                 if (c == 'P' || c == 'K') break;
-                else if (m.TuJeBrana(x, y + i)) Mapa.Set(x, y + i, 'G');
-                else Mapa.Set(x , y+i, 'n');
+                else if (!m.TuJeBranaAleboDarcek(x, y + i)) Mapa.Set(x, y + i, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x, y - i);
                 if (c == 'P' || c == 'K') break;
-                else if (m.TuJeBrana(x, y - i)) Mapa.Set(x, y - i, 'G');
-                else Mapa.Set(x , y-i, 'n');
+                else if (!m.TuJeBranaAleboDarcek(x, y - i)) Mapa.Set(x, y - i, 'n');
             }
 
             foreach (var p in Postavicka.RemovePostavicky)      //odstrani vybuchnute postavicky

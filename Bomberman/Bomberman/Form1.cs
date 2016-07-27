@@ -15,16 +15,17 @@ namespace Bomberman
             frame = new Bitmap(50 * 15, 50 * 13);
             KeyPreview = true;
             this.DoubleBuffered = true;
+            PrejdiDoStavu(Stav.uvod);
         }
         Graphics g;
         Mapa m;
         Bitmap frame;
         public static Form1 MojFormular;
         TimeSpan ts;
-        int level;
+        public int level=1;
 
         enum Sipky { ziadna, vpravo, vlavo, hore, dole };
-        public enum Stav { uvod, bezi, vyhra, prehra, vyhodnotenie, koniec};
+        public enum Stav { uvod, bezi, vyhra, prehra, vyhodnotenie, koniec, info};
         Stav stav = Stav.uvod;  
 
         static Sipky KtoraJeStlacena()
@@ -43,13 +44,16 @@ namespace Bomberman
 
         private void BNovaHra_Click(object sender, EventArgs e)
         {
-            level = 1;
-            g = Graphics.FromImage(frame);
+            if (stav==Stav.koniec)
+            {
+                level = 1;
+                Vybuch.dosah = 1;
+                Vybuch.maxNaraz = 1;
+            }
             PrejdiDoStavu(Stav.bezi);
             m = new Mapa("mapa" + level.ToString() + ".txt", "ikonky.png", g);                     
             m.Prekresli(g);
         }
-
         public void Resetuj()
         {
             Vybuch.cakajuciList.Clear();
@@ -60,14 +64,18 @@ namespace Bomberman
             BVzdatTo.Visible = false;
             BDalsiLevel.Visible = false;
             BReplay.Visible = false;
+            BInfo.Visible = false;
             Bomberman.Mapa.BranaJeOtvorena = false;
         }
-
         public void PrejdiDoStavu(Stav novyStav)
         {
             switch (novyStav)
             {
                 case Stav.uvod:
+                    g = Graphics.FromImage(frame);
+                    g.DrawImage(new Bitmap("background.png"), 0, 0);
+                    this.Invalidate();
+                    BNovaHra.Visible = true;
                     TCasomiera.Visible = false;
                     stav = Stav.uvod;
                     break;
@@ -85,6 +93,7 @@ namespace Bomberman
                     BDalsiLevel.Visible = true;
                     BReplay.Visible = true;
                     TCasomiera.Visible = false;
+                    BInfo.Visible = true;
                     stav = Stav.vyhra;
                     break;
                 case Stav.prehra:
@@ -100,6 +109,7 @@ namespace Bomberman
                     this.Invalidate();
                     BSkusitZnovu.Visible = true;
                     BVzdatTo.Visible = true;
+                    BInfo.Visible = true;
                     stav = Stav.vyhodnotenie;
                     break;
                 case Stav.koniec:
@@ -109,6 +119,15 @@ namespace Bomberman
                     BDalsiLevel.Visible = false;
                     BNovaHra.Visible = true;
                     BNovaHra.Location = new System.Drawing.Point(Form1.MojFormular.Width/2 - BNovaHra.Width/2,(Form1.MojFormular.Height /4)*3);
+                    break;
+                case Stav.info:
+                    Bitmap infoPic = new Bitmap("infoPic.png");
+                    BNovaHra.Visible = false;
+                    BSkusitZnovu.Visible = false;
+                    BVzdatTo.Visible = false;
+                    BDalsiLevel.Visible = false;
+                    g.DrawImage(infoPic, 0, 0);
+                    this.Invalidate();
                     break;
                 default:
                     break;
@@ -207,6 +226,21 @@ namespace Bomberman
 
         private void BSkusitZnovu_Click(object sender, EventArgs e)
         {
+            switch (level)
+            {
+                case 1:
+                case 3:
+                    if (Vybuch.dosah == (2 + level / 3))
+                        Vybuch.dosah--;
+                    break;
+                case 2:
+                case 4:
+                    if (Vybuch.maxNaraz == (2 + level / 3))
+                        Vybuch.maxNaraz--;
+                    break;
+                default:
+                    break;
+            }
             BNovaHra_Click(sender,e);
         }
 
@@ -222,7 +256,7 @@ namespace Bomberman
 
         private void BDalsiLevel_Click(object sender, EventArgs e)
         {
-           if (level < 1)
+           if (level < 6)
             {
                 level++;
                 BNovaHra_Click(sender, e);
@@ -236,6 +270,22 @@ namespace Bomberman
         private void BReplay_Click(object sender, EventArgs e)
         {
             BSkusitZnovu_Click(sender, e);
+        }
+
+        private void BInfo_Click(object sender, EventArgs e)
+        {
+            if (this.BInfo.Tag.ToString() == "info")
+            {
+                PrejdiDoStavu(Stav.info);
+                this.BInfo.BackgroundImage = new Bitmap("x.png");
+                this.BInfo.Tag = "x";
+            }
+            else
+            {
+                PrejdiDoStavu(stav);
+                this.BInfo.BackgroundImage = new Bitmap("info.png");
+                this.BInfo.Tag = "info";
+            }
         }
     }  
 }
