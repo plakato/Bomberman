@@ -2,12 +2,12 @@
 15
 13
 PPPPPPPPPPPPPPP
-PnnnKnnKnnnnKnP
+PnnnKnKKnnnnKnP
 PnPnPnPnPKPnPnP
-PnKKnnnnnnKnnKP
+PnKKnnnDnnKnnKP
 PKPKPKPnPKPnPKP
 PnnnnnnKnKnnKDP
-PKPnPnPnPnPnPKP
+PKPnPnPnPnPnPnP
 PnnKnnnnKnnnnnP
 PnPnPKPDPnPDPnP
 PnnKKnnnnKnKnnP

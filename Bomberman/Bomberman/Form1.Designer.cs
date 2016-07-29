@@ -39,14 +39,16 @@
             this.BDalsiLevel = new System.Windows.Forms.Button();
             this.BReplay = new System.Windows.Forms.Button();
             this.BInfo = new System.Windows.Forms.Button();
+            this.LLevel = new System.Windows.Forms.Label();
+            this.LZivoty = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // BNovaHra
             // 
             this.BNovaHra.BackColor = System.Drawing.Color.Transparent;
             this.BNovaHra.FlatAppearance.BorderSize = 0;
-            this.BNovaHra.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Red;
-            this.BNovaHra.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
+            this.BNovaHra.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.BNovaHra.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(5)))));
             this.BNovaHra.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BNovaHra.Font = new System.Drawing.Font("Microsoft YaHei UI", 39.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BNovaHra.ForeColor = System.Drawing.Color.Cornsilk;
@@ -71,6 +73,8 @@
             // 
             this.BSkusitZnovu.BackColor = System.Drawing.Color.Transparent;
             this.BSkusitZnovu.FlatAppearance.BorderSize = 0;
+            this.BSkusitZnovu.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.BSkusitZnovu.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.BSkusitZnovu.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BSkusitZnovu.Font = new System.Drawing.Font("Microsoft YaHei UI", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BSkusitZnovu.ForeColor = System.Drawing.SystemColors.ControlLightLight;
@@ -87,6 +91,8 @@
             // 
             this.BVzdatTo.BackColor = System.Drawing.Color.Transparent;
             this.BVzdatTo.FlatAppearance.BorderSize = 0;
+            this.BVzdatTo.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.BVzdatTo.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.BVzdatTo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BVzdatTo.Font = new System.Drawing.Font("Microsoft YaHei UI", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BVzdatTo.ForeColor = System.Drawing.SystemColors.MenuHighlight;
@@ -118,10 +124,10 @@
             // 
             this.BDalsiLevel.BackColor = System.Drawing.Color.Transparent;
             this.BDalsiLevel.FlatAppearance.BorderSize = 0;
-            this.BDalsiLevel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Red;
-            this.BDalsiLevel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Black;
+            this.BDalsiLevel.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.BDalsiLevel.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.BDalsiLevel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BDalsiLevel.Font = new System.Drawing.Font("Microsoft YaHei UI", 39.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BDalsiLevel.Font = new System.Drawing.Font("Tahoma", 39.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BDalsiLevel.ForeColor = System.Drawing.Color.Blue;
             this.BDalsiLevel.Location = new System.Drawing.Point(157, 461);
             this.BDalsiLevel.Name = "BDalsiLevel";
@@ -136,6 +142,8 @@
             // 
             this.BReplay.BackColor = System.Drawing.Color.Transparent;
             this.BReplay.FlatAppearance.BorderSize = 0;
+            this.BReplay.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.BReplay.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
             this.BReplay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.BReplay.Font = new System.Drawing.Font("Microsoft YaHei UI", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BReplay.ForeColor = System.Drawing.SystemColors.MenuHighlight;
@@ -165,12 +173,41 @@
             this.BInfo.UseVisualStyleBackColor = false;
             this.BInfo.Click += new System.EventHandler(this.BInfo_Click);
             // 
+            // LLevel
+            // 
+            this.LLevel.AutoSize = true;
+            this.LLevel.BackColor = System.Drawing.Color.Transparent;
+            this.LLevel.Font = new System.Drawing.Font("Modern No. 20", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LLevel.ForeColor = System.Drawing.SystemColors.Control;
+            this.LLevel.Location = new System.Drawing.Point(19, 621);
+            this.LLevel.Name = "LLevel";
+            this.LLevel.Size = new System.Drawing.Size(68, 24);
+            this.LLevel.TabIndex = 7;
+            this.LLevel.Text = "label1";
+            this.LLevel.Visible = false;
+            // 
+            // LZivoty
+            // 
+            this.LZivoty.BackColor = System.Drawing.Color.Transparent;
+            this.LZivoty.Font = new System.Drawing.Font("Microsoft YaHei UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.LZivoty.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.LZivoty.Image = ((System.Drawing.Image)(resources.GetObject("LZivoty.Image")));
+            this.LZivoty.Location = new System.Drawing.Point(322, 613);
+            this.LZivoty.Name = "LZivoty";
+            this.LZivoty.Size = new System.Drawing.Size(30, 30);
+            this.LZivoty.TabIndex = 8;
+            this.LZivoty.Text = "3";
+            this.LZivoty.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.LZivoty.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(753, 649);
+            this.Controls.Add(this.LZivoty);
+            this.Controls.Add(this.LLevel);
             this.Controls.Add(this.BInfo);
             this.Controls.Add(this.BReplay);
             this.Controls.Add(this.BDalsiLevel);
@@ -198,6 +235,8 @@
         private System.Windows.Forms.Button BDalsiLevel;
         private System.Windows.Forms.Button BReplay;
         private System.Windows.Forms.Button BInfo;
+        private System.Windows.Forms.Label LLevel;
+        private System.Windows.Forms.Label LZivoty;
     }
 }
 

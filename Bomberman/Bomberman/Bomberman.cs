@@ -45,6 +45,7 @@ namespace Bomberman
             mapa = new char[vyska, sirka];
             int kamen = 0;
             char c;
+
             Random rnd = new Random();
             int brana = rnd.Next(0, 32);
             int d = rnd.Next(0, 32);
@@ -53,7 +54,7 @@ namespace Bomberman
                 d = rnd.Next(0, 32);
             }
             
-            for (int i = 0; i < vyska; i++)
+            for (int i = 0; i < vyska; i++)     //nacitam mapu do pola a vytvorim vyznacene objekty
             {
                 String riadok = sr.ReadLine();
                 for (int j = 0; j < sirka; j++)
@@ -121,7 +122,7 @@ namespace Bomberman
                 for (int x = 0; x < sirka; x++)
                 {
                     char c = mapa[y, x];
-                    int index = "nKPBV<>v^-|kGFER".IndexOf(c);     //nic,kamen,prekazka,bomba,vybuch+jehosmery,k=vybuchnuty kamen,gate,fire,extra bomb,rubber duck
+                    int index = "nKPBV<>v^-|kGFER".IndexOf(c);     //nic, kamen, prekazka, bomba, vybuch+jehosmery, k=vybuchnuty kamen, gate, fire, extra bomb, rubber duck
                     g.DrawImage(ikonky[index], sx * x, sx * y);
                 }
             }
@@ -143,7 +144,7 @@ namespace Bomberman
             if (p==Feri)               //zistim, ci je bomberman mimo bomby - teda uz na nu nemoze vkrocit
             {
                 if (mapa[PoziciaVMape(y), PoziciaVMape(x)] == 'n' &&
-                    mapa[PoziciaVMape(y + p.radius), PoziciaVMape(x + p.radius)] == 'n')
+                    mapa[PoziciaVMape(y + p.radius), PoziciaVMape(x + p.radius)] == 'n')        //kontrolujem len 2 protilahle rohy - lebo sa nemoze hybat sikmo
                 {
                     vzdialilSaOdBomby = true;
                 }
@@ -161,15 +162,19 @@ namespace Bomberman
             int j = PoziciaVMape(x);
             int i = PoziciaVMape(y);
             char[] vybuch = { 'V', 'v', '>', '<', '^', '|', '-' };
-            if (mapa[i, j] == 'P' || mapa[i, j] == 'K' || mapa[i,j] == 'k')
+            if (mapa[i, j] == 'P' || 
+                mapa[i, j] == 'K' || 
+                mapa[i, j] == 'k')
                 return true;
             else if (mapa[i, j] == 'B')
             {
-                if (vzdialilSaOdBomby || p != Feri) return true;
-                else return false;
+                if (vzdialilSaOdBomby || p != Feri)     //Bman moze prejst cez bombu iba ked ju polozi, ostatni nikdy
+                    return true;
+                else
+                    return false;
             }
-            else if (mapa[i, j] == 'G' && Feri.JevBrane(sx))
-                return true;
+            else if (mapa[i, j] == 'G')
+                return Feri.JevBrane(sx);           //ak uz je v brane, nejde dalej - Feri.JeVBrane() vyhodnoti a ukonci hru
             else if (vybuch.Contains(mapa[i, j])) 
             {
                 p.Umrel();
@@ -186,7 +191,6 @@ namespace Bomberman
                 mapa[i, j] = 'B';
                 Vybuch v = new Vybuch(i, j, m);
                 vzdialilSaOdBomby = false;
-                //Console.WriteLine("zmenil som na false");
             }
         }
         public bool TuJeBranaAleboDarcek(int x, int y)
@@ -219,7 +223,7 @@ namespace Bomberman
                     BolDarcek = true;
                     break;
                 case 'R':
-                    mapa[branax, branay] = 'G';
+                    mapa[branax, branay] = 'G';     //ukaze kde je brana
                     BolDarcek = true;
                     break;
                 default:
@@ -228,9 +232,13 @@ namespace Bomberman
             if (BolDarcek)
             {
                 mapa[i, j] = 'n';
-                darcekx = -1;
-                darceky = -1;
+                DarcekJePouzity();          
             }
+        }
+        public void DarcekJePouzity()
+        {
+            darcekx = -1;               //suradnice sa zmenia aby Vybuch.UpracVybuch() neukazal darcek znova
+            darceky = -1;
         }
         public static char Get(int x, int y)
         {
@@ -267,17 +275,17 @@ namespace Bomberman
             this.bitmapa = new Bitmap("smrtka.png");
             RemovePostavicky.Add(this);
         }
-        public virtual void ZmenSmer()
+        public virtual void ZmenSmer(int n)
         {
-
+                                            //nic - pretoze Bman (podedeny z postavicky) nemeni smer
         }
     }
 
     public class Bman : Postavicka
     {
+
         public Bman(int x, int y, int r, Bitmap bmp) : base(x,y,r,bmp)
         {
-
         }
         public bool JevBrane(int sx)
         {
@@ -295,31 +303,32 @@ namespace Bomberman
         {
             base.Umrel();
             Form1.MojFormular.PrejdiDoStavu(Form1.Stav.prehra);
+
         }
     }
     public class Duch : Postavicka
     {
         static Random rnd = new Random(4);
-        int[] smery = { 0, 0, -5, +5 };
+        int[] smery = { 0, +5, 0, -5 };
         int i;
 
         public Duch(int x, int y, int r, Bitmap bmp) : base(x,y,r,bmp)
         {
             i = rnd.Next(4);
             xzmena = smery[i];
-            yzmena = smery[(i + 2) % 4];
+            yzmena = smery[(i + 1) % 4];    //ked je x od y zmeny posunuta o 1 => iba zvisly a horizontalny smer
         }
-        public override void ZmenSmer()
+        public override void ZmenSmer(int n)
         {
-            i = (i + 1) % 4;
+            i = (4 + n + i) % 4;
             xzmena = smery[i];
-            yzmena = smery[(i + 2) % 4];
+            yzmena = smery[(i + 1) % 4];
         }
         public override void Umrel()
         {
             base.Umrel();
-            this.smery[3] = 0;
-            this.smery[2] = 0;
+            this.smery[3] = 0;      //nez uplne umrie, prestane sa hybat
+            this.smery[1] = 0;
             this.xzmena = 0;
             this.yzmena = 0;
         }
@@ -358,7 +367,7 @@ namespace Bomberman
 
         public static void VyhodnotBomby()
         {
-            foreach (var v in cakajuciList)
+            foreach (var v in cakajuciList)     //polozene ale nevybuchnute bomby
             {
                 v.doba--;
                 if (v.doba == 10)
@@ -367,7 +376,7 @@ namespace Bomberman
                     vybuchujuciList.Add(v);
                 }
             }
-            foreach (var v in vybuchujuciList)
+            foreach (var v in vybuchujuciList)      //prave vybuchujuce
             {
                 if (v.doba == 10) cakajuciList.Remove(v);
                 v.doba--;
@@ -382,13 +391,12 @@ namespace Bomberman
                 vybuchujuciList.Remove(v);
             }
             removeList.Clear();
-            //Console.WriteLine("Cakajuci list size "+cakajuciList.Count+", vybuchujuci list size: "+vybuchujuciList.Count);
         }
 
         static void VykresliVybuch(int x, int y)
         {
             Mapa.Set(x, y, 'V');
-            for (int i = 1; i <= dosah; i++)
+            for (int i = 1; i <= dosah; i++)            //vybuch sa vykresluje do kazdeho smeru, az kym nenarazi na prekazku
             {
                 if (!MozeVybuchPokracovat(x+i,y,i, 'v', '|')) break;
             }
@@ -407,32 +415,43 @@ namespace Bomberman
         }
         static bool MozeVybuchPokracovat(int x, int y,int i, char koniec, char most)
         {
-            char[] zakazVojst = { 'P', 'k', 'G' ,'K','B'};
+            char[] zakazVojst = { 'P', 'k', 'G' ,'K','B'};      //prekazky pre vybuch
             char c;
+            char[] darceky = { 'F', 'E', 'R' };
             c = Mapa.Get(x , y);
             bool v = true;
-                if (zakazVojst.Contains(c)) v = false;
-                 if (c == 'K')
-                {
-                    Mapa.Set(x, y, 'k');
-                }
-                 if (c == 'B')
-                {
-                    NajdiVybuch(x, y).doba = 11;        //10 je doba, pri ktorej bomba vybuchuje
-                }
-                if (c=='n')
-                {
+
+            if (zakazVojst.Contains(c))
+                    v = false;
+            if (c == 'K')
+            {
+                Mapa.Set(x, y, 'k');            //'k' = obrazok vybuchnuteho kamena
+            }
+            if (c == 'B')
+            {
+                NajdiVybuch(x, y).doba = 11;        //10 je doba, pri ktorej bomba vybuchuje - takto sa spusti retazova reakcia
+            }
+            if (darceky.Contains(c))
+            {
+                Mapa.Set(x, y, koniec);             //darcek vybuchne a uz ho nie je mozne vziat
+                m.DarcekJePouzity();
+                v = false;
+            }
+            if (c=='n')
+            {
                 if (i == dosah)
                     Mapa.Set(x, y, koniec);               
                 else Mapa.Set(x, y, most);
-                }
-                return v;
+            }
+            return v;
         }
         static Vybuch NajdiVybuch(int x, int y)
         {
             foreach (var v in cakajuciList)
             {
-                if (v.x == x && v.y == y) return v;
+                if (v.x == x && 
+                    v.y == y)
+                    return v;
             }
             throw new System.InvalidProgramException("Nastala nezhoda v bombach, prosim vyhladajte odbornika.");
         }
@@ -440,29 +459,33 @@ namespace Bomberman
         {
             char c;
             Mapa.Set(x, y, 'n');
-            for (int i = 1; i <= dosah; i++)
+            for (int i = 1; i <= dosah; i++)        //uprace kazdy smer vybuchu az po miesto, kde sa vybuch zastavil
             {
                 c = Mapa.Get(x + i, y);
                 if (c == 'P' || c == 'K') break;
-                else if (!m.TuJeBranaAleboDarcek(x + i, y)) Mapa.Set(x + i, y, 'n');
+                else if (!m.TuJeBranaAleboDarcek(x + i, y))
+                    Mapa.Set(x + i, y, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x - i, y);
                 if (c == 'P' || c == 'K') break;
-                else if (!m.TuJeBranaAleboDarcek(x - i, y)) Mapa.Set(x - i, y, 'n');
+                else if (!m.TuJeBranaAleboDarcek(x - i, y))
+                    Mapa.Set(x - i, y, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x , y + i);
                 if (c == 'P' || c == 'K') break;
-                else if (!m.TuJeBranaAleboDarcek(x, y + i)) Mapa.Set(x, y + i, 'n');
+                else if (!m.TuJeBranaAleboDarcek(x, y + i))
+                    Mapa.Set(x, y + i, 'n');
             }
             for (int i = 1; i <= dosah; i++)
             {
                 c = Mapa.Get(x, y - i);
                 if (c == 'P' || c == 'K') break;
-                else if (!m.TuJeBranaAleboDarcek(x, y - i)) Mapa.Set(x, y - i, 'n');
+                else if (!m.TuJeBranaAleboDarcek(x, y - i))
+                    Mapa.Set(x, y - i, 'n');
             }
 
             foreach (var p in Postavicka.RemovePostavicky)      //odstrani vybuchnute postavicky
@@ -478,7 +501,7 @@ namespace Bomberman
 
         public static bool MozesBombovat()
         {
-            if (cakajuciList.Count < maxNaraz)
+            if (cakajuciList.Count < maxNaraz)  //obmedzuje pocet bomb, ktore moze mat BMan v jednej chvili polozene
             {
                 return true;
             }

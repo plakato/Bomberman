@@ -1,4 +1,12 @@
-﻿using System;
+﻿/**************
+BOMBERMAN
+
+Patrícia Lakatošová
+Programovanie II
+MFF UK 2016
+***************/
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using NullFX.Win32;
@@ -20,9 +28,11 @@ namespace Bomberman
         Graphics g;
         Mapa m;
         Bitmap frame;
+        Random rnd = new Random();
         public static Form1 MojFormular;
         TimeSpan ts;
-        public int level=1;
+        public int level;
+        public int zivoty;
 
         enum Sipky { ziadna, vpravo, vlavo, hore, dole };
         public enum Stav { uvod, bezi, vyhra, prehra, vyhodnotenie, koniec, info};
@@ -50,9 +60,10 @@ namespace Bomberman
                 Vybuch.dosah = 1;
                 Vybuch.maxNaraz = 1;
             }
-            PrejdiDoStavu(Stav.bezi);
-            m = new Mapa("mapa" + level.ToString() + ".txt", "ikonky.png", g);                     
+            m = new Mapa("mapa" + level.ToString() + ".txt", "ikonky.png", g);
             m.Prekresli(g);
+            PrejdiDoStavu(Stav.bezi);
+
         }
         public void Resetuj()
         {
@@ -76,31 +87,55 @@ namespace Bomberman
                     g.DrawImage(new Bitmap("background.png"), 0, 0);
                     this.Invalidate();
                     BNovaHra.Visible = true;
+                    LLevel.Visible = false;
+                    LZivoty.Visible = false;
+                    zivoty = 12;
                     TCasomiera.Visible = false;
+                    level = 1;
                     stav = Stav.uvod;
                     break;
                 case Stav.bezi:
                     Resetuj();
                     TCasomiera.Visible = true;        
-                    this.Focus();
+                    this.Focus();                   //aby medzernik nestlacal defaultne tlacidlo, ale hadzal bomby
                     timer1.Enabled = true;
                     timer2.Enabled = true;
-                    ts = new TimeSpan(0, 4, 0);
+                    LZivoty.Visible = true;
+                    LZivoty.Text = (zivoty/4).ToString();
+                    LLevel.Visible = true;
+                    LLevel.Text = "Level " + level.ToString();
+                    ts = new TimeSpan(0, 4, 0);        //tu mozno menit maximalny cas na jeden level
                     stav = Stav.bezi;
                     break;
                 case Stav.vyhra:
                     timer1.Enabled = false;
+                    timer2.Enabled = false;
+                    Bitmap youveWon = new Bitmap("vyhra.png");
+                    g.DrawImage(youveWon, 0, 0);
+                    this.Invalidate();
                     BDalsiLevel.Visible = true;
                     BReplay.Visible = true;
+                    LLevel.Visible = false;
+                    LZivoty.Visible = false;
                     TCasomiera.Visible = false;
                     BInfo.Visible = true;
                     stav = Stav.vyhra;
                     break;
                 case Stav.prehra:
                     timer1.Enabled = false;
-                    timer2.Enabled = true;
                     TCasomiera.Visible = false;
-                    stav = Stav.prehra;
+                    zivoty--;
+                    Console.WriteLine("zivoty "+zivoty.ToString());
+                    if (zivoty == 0)
+                    {
+                        PrejdiDoStavu(Stav.uvod);
+                        timer2.Enabled = false;
+                    }
+                    else
+                    {
+                        timer2.Enabled = true;
+                        stav = Stav.prehra;
+                    }
                     break;
                 case Stav.vyhodnotenie:
                     timer2.Enabled = false;
@@ -109,6 +144,9 @@ namespace Bomberman
                     this.Invalidate();
                     BSkusitZnovu.Visible = true;
                     BVzdatTo.Visible = true;
+                    LZivoty.Visible = false;
+                    LLevel.Visible = false;
+                    BNovaHra.Visible = false;
                     BInfo.Visible = true;
                     stav = Stav.vyhodnotenie;
                     break;
@@ -118,13 +156,17 @@ namespace Bomberman
                     this.Invalidate();
                     BDalsiLevel.Visible = false;
                     BNovaHra.Visible = true;
-                    BNovaHra.Location = new System.Drawing.Point(Form1.MojFormular.Width/2 - BNovaHra.Width/2,(Form1.MojFormular.Height /4)*3);
+                    LZivoty.Visible = false;
+                    LLevel.Visible = false;
+                    BNovaHra.Location = new System.Drawing.Point(Form1.MojFormular.Width/2 - BNovaHra.Width/2,(Form1.MojFormular.Height /5)*3);
                     break;
                 case Stav.info:
                     Bitmap infoPic = new Bitmap("infoPic.png");
                     BNovaHra.Visible = false;
                     BSkusitZnovu.Visible = false;
+                    BReplay.Visible = false;
                     BVzdatTo.Visible = false;
+                    LLevel.Visible = false;
                     BDalsiLevel.Visible = false;
                     g.DrawImage(infoPic, 0, 0);
                     this.Invalidate();
@@ -141,9 +183,10 @@ namespace Bomberman
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            ts = ts.Subtract(TimeSpan.FromMilliseconds(100));
             KeyStateInfo medzernik = KeyboardInfo.GetKeyState(Keys.Space);
             if (medzernik.IsPressed && Vybuch.MozesBombovat()) 
-                    m.TuDajBombu(m.Feri.px + m.Feri.radius/2, m.Feri.py + m.Feri.radius / 2, m);
+                    m.TuDajBombu(m.Feri.px + m.Feri.radius/2, m.Feri.py + m.Feri.radius / 2, m);       //bomba na stred postavicky
             Vybuch.VyhodnotBomby();
             m.Feri.xzmena = 0;
             m.Feri.yzmena = 0;
@@ -169,12 +212,16 @@ namespace Bomberman
 
             PohniPostavickamiAPrekresli();          
         }
-
         public void PohniPostavickamiAPrekresli()
         {
+            int n = 0;
             foreach (var p in m.Postavicky)
             {
-                for (int i = 0; i < 4; i++)
+                while (n == 0)
+                {
+                    n = rnd.Next(-1, 1);        //duch meni sme nahodne v smere alebo proti smeru hodinovych ruciciek
+                }
+                for (int i = 0; i < 4; i++)                                             //opakuje sa 4-krat, aby duchovia mohli zmenit smer v slepej ulicke
                 {
                     if (m.MozePostavickaVkrocit(p.px + p.xzmena, p.py + p.yzmena, p))
                     {
@@ -182,7 +229,7 @@ namespace Bomberman
                         p.py += p.yzmena;
                         break;
                     }
-                    else p.ZmenSmer();
+                    else p.ZmenSmer(n);
                 }
 
                 if (p is Duch)
@@ -203,6 +250,10 @@ namespace Bomberman
                 Bitmap youveWon = new Bitmap("vyhra.png");
                 g.DrawImage(youveWon, 0, 0);
             }
+            if (stav == Stav.uvod)
+            {
+                PrejdiDoStavu(Stav.uvod);
+            }
 
             TCasomiera.Text = ts.ToString(@"m\:ss");
             this.Invalidate();
@@ -210,20 +261,24 @@ namespace Bomberman
 
         private void timer2_Tick(object sender, EventArgs e)
         {
-            if (stav==Stav.prehra) PrejdiDoStavu(Stav.vyhodnotenie);
+            if (stav==Stav.prehra)
+                PrejdiDoStavu(Stav.vyhodnotenie);
             else
             {
-                ts = ts.Subtract(TimeSpan.FromSeconds(1));
+                foreach (var p in m.Postavicky)
+                {
+                    p.ZmenSmer(1);
+                }
                 if (ts == TimeSpan.FromSeconds(0))
                     PrejdiDoStavu(Stav.prehra);
             }
         }
 
+        //---------- CLICKY --------------
         private void BVzdatTo_Click(object sender, EventArgs e)
         {
             Form1.MojFormular.Close();
         }
-
         private void BSkusitZnovu_Click(object sender, EventArgs e)
         {
             switch (level)
@@ -243,17 +298,14 @@ namespace Bomberman
             }
             BNovaHra_Click(sender,e);
         }
-
         private void label1_Click(object sender, EventArgs e)
         {
 
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
-
         private void BDalsiLevel_Click(object sender, EventArgs e)
         {
            if (level < 6)
@@ -266,15 +318,13 @@ namespace Bomberman
                 PrejdiDoStavu(Stav.koniec);
             }
         }
-
         private void BReplay_Click(object sender, EventArgs e)
         {
             BSkusitZnovu_Click(sender, e);
         }
-
         private void BInfo_Click(object sender, EventArgs e)
         {
-            if (this.BInfo.Tag.ToString() == "info")
+            if (this.BInfo.Tag.ToString() == "info")            //kliknutim na rovnake tlacidlo sa zobrazi alebo skryje infopanel
             {
                 PrejdiDoStavu(Stav.info);
                 this.BInfo.BackgroundImage = new Bitmap("x.png");
