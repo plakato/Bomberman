@@ -83,16 +83,16 @@ namespace Bomberman
             switch (novyStav)
             {
                 case Stav.uvod:
+                    stav = Stav.uvod;
                     g = Graphics.FromImage(frame);
                     g.DrawImage(new Bitmap("background.png"), 0, 0);
                     this.Invalidate();
                     BNovaHra.Visible = true;
                     LLevel.Visible = false;
                     LZivoty.Visible = false;
-                    zivoty = 12;
+                    zivoty = 3;
                     TCasomiera.Visible = false;
                     level = 1;
-                    stav = Stav.uvod;
                     break;
                 case Stav.bezi:
                     Resetuj();
@@ -101,7 +101,7 @@ namespace Bomberman
                     timer1.Enabled = true;
                     timer2.Enabled = true;
                     LZivoty.Visible = true;
-                    LZivoty.Text = (zivoty/4).ToString();
+                    LZivoty.Text = (zivoty).ToString();
                     LLevel.Visible = true;
                     LLevel.Text = "Level " + level.ToString();
                     ts = new TimeSpan(0, 4, 0);        //tu mozno menit maximalny cas na jeden level
@@ -126,10 +126,10 @@ namespace Bomberman
                     TCasomiera.Visible = false;
                     zivoty--;
                     Console.WriteLine("zivoty "+zivoty.ToString());
-                    if (zivoty == 0)
+                    if (zivoty == -1)
                     {
-                        PrejdiDoStavu(Stav.uvod);
                         timer2.Enabled = false;
+                        PrejdiDoStavu(Stav.uvod);
                     }
                     else
                     {
@@ -259,7 +259,7 @@ namespace Bomberman
             this.Invalidate();
         }
 
-        private void timer2_Tick(object sender, EventArgs e)
+        private void timer2_Tick(object sender, EventArgs e)        //zobrazuje vyhodnotenie pri prehre, casomieru, meni pohyb duchov
         {
             if (stav==Stav.prehra)
                 PrejdiDoStavu(Stav.vyhodnotenie);

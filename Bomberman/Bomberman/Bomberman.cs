@@ -136,10 +136,11 @@ namespace Bomberman
         public bool MozePostavickaVkrocit(int x, int y, Postavicka p)                   //kontroluje ci nejaky roh postavicky uz je na skale
         {
             bool vystup = true;
-            if (JeSkalaAleboBomba(x, y, p)) vystup = false;
-            if (JeSkalaAleboBomba(x + p.radius, y, p)) vystup = false;
-            if (JeSkalaAleboBomba(x, y + p.radius, p)) vystup = false;
-            if (JeSkalaAleboBomba(x + p.radius, y + p.radius, p)) vystup = false;
+            bool skapal = false;
+            if (!skapal && JeSkalaAleboBomba(x, y, p, ref skapal)) vystup = false;
+            if (!skapal && JeSkalaAleboBomba(x + p.radius, y, p, ref skapal)) vystup = false;
+            if (!skapal && JeSkalaAleboBomba(x, y + p.radius, p, ref skapal)) vystup = false;
+            if (!skapal && JeSkalaAleboBomba(x + p.radius, y + p.radius, p, ref skapal)) vystup = false;
 
             if (p==Feri)               //zistim, ci je bomberman mimo bomby - teda uz na nu nemoze vkrocit
             {
@@ -157,7 +158,7 @@ namespace Bomberman
         {
             return (int)(x / sx);
         }
-        bool JeSkalaAleboBomba(int x, int y, Postavicka p)
+        bool JeSkalaAleboBomba(int x, int y, Postavicka p, ref bool skapal)
         {
             int j = PoziciaVMape(x);
             int i = PoziciaVMape(y);
@@ -178,6 +179,7 @@ namespace Bomberman
             else if (vybuch.Contains(mapa[i, j])) 
             {
                 p.Umrel();
+                skapal = true;
             }
             return false;
         }
