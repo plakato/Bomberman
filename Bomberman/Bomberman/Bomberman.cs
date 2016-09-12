@@ -137,19 +137,23 @@ namespace Bomberman
         {
             bool vystup = true;
             bool skapal = false;
+
+            if (p == Feri)               //zistim, ci je bomberman mimo bomby - teda uz na nu nemoze vkrocit
+            {
+                if (mapa[PoziciaVMape(y), PoziciaVMape(x)] == 'n' &&
+                    mapa[PoziciaVMape(y + p.radius), PoziciaVMape(x + p.radius)] == 'n' &&
+                    mapa[PoziciaVMape(y), PoziciaVMape(x + p.radius)] == 'n' &&
+                    mapa[PoziciaVMape(y + p.radius), PoziciaVMape(x)] == 'n')        
+                {
+                    vzdialilSaOdBomby = true;
+                }
+            }
             if (!skapal && JeSkalaAleboBomba(x, y, p, ref skapal)) vystup = false;
             if (!skapal && JeSkalaAleboBomba(x + p.radius, y, p, ref skapal)) vystup = false;
             if (!skapal && JeSkalaAleboBomba(x, y + p.radius, p, ref skapal)) vystup = false;
             if (!skapal && JeSkalaAleboBomba(x + p.radius, y + p.radius, p, ref skapal)) vystup = false;
 
-            if (p==Feri)               //zistim, ci je bomberman mimo bomby - teda uz na nu nemoze vkrocit
-            {
-                if (mapa[PoziciaVMape(y), PoziciaVMape(x)] == 'n' &&
-                    mapa[PoziciaVMape(y + p.radius), PoziciaVMape(x + p.radius)] == 'n')        //kontrolujem len 2 protilahle rohy - lebo sa nemoze hybat sikmo
-                {
-                    vzdialilSaOdBomby = true;
-                }
-            }
+
             AkJeDarcekVezmi();
                 
             return vystup;
